@@ -36,7 +36,8 @@
 
 
 * 设置文件名：
-  * ![image](https://github.com/CoderSuHang/Cpp-Primer-Plus-Notes/assets/104765251/c2c6e443-72ac-4c50-9463-70fd1c272491)
+  * ![image](https://github.com/CoderSuHang/Cpp-Primer-Plus-Notes/assets/104765251/b53a3f28-e41b-4bf6-80d7-6d694bc1a904)
+
 
 
 ##### 2.1.1.3 编写代码
