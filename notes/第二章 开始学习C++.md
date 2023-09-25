@@ -27,7 +27,8 @@
   * ![image](https://github.com/CoderSuHang/Cpp-Primer-Plus-Notes/assets/104765251/fb15e5a0-3a50-4816-bf21-7dd3465bb1fb)
 
 * 2.文件命名：
-  * image-20230925153804065
+  * ![image](https://github.com/CoderSuHang/Cpp-Primer-Plus-Notes/assets/104765251/993360a3-9893-49a9-92a2-05f0c6a34d7b)
+
 
 ##### 2.1.1.2 创建文件
 
