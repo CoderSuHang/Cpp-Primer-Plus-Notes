@@ -24,17 +24,20 @@
 ##### 2.1.1.1 创建项目
 
 * 1.点击文件创建，选择C++空项目：
-  * ![image-20230925153656960](C:\Users\10482\AppData\Roaming\Typora\typora-user-images\image-20230925153656960.png)
+  * ![image](https://github.com/CoderSuHang/Cpp-Primer-Plus-Notes/assets/104765251/fb15e5a0-3a50-4816-bf21-7dd3465bb1fb)
+
 * 2.文件命名：
-  * ![image-20230925153804065](C:\Users\10482\AppData\Roaming\Typora\typora-user-images\image-20230925153804065.png)
+  * image-20230925153804065
 
 ##### 2.1.1.2 创建文件
 
 * 右击“解决方案资源管理器”的“源文件”进行添加“新建项”：
-  * ![image-20230925154207872](C:\Users\10482\AppData\Roaming\Typora\typora-user-images\image-20230925154207872.png)
+  * ![image](https://github.com/CoderSuHang/Cpp-Primer-Plus-Notes/assets/104765251/4179cf5e-c3f1-41b7-b5e0-5d9a871ae86a)
+
 
 * 设置文件名：
-  * ![image-20230925154343028](C:\Users\10482\AppData\Roaming\Typora\typora-user-images\image-20230925154343028.png)
+  * ![image](https://github.com/CoderSuHang/Cpp-Primer-Plus-Notes/assets/104765251/c2c6e443-72ac-4c50-9463-70fd1c272491)
+
 
 ##### 2.1.1.3 编写代码
 
@@ -56,8 +59,10 @@
 ##### 2.1.1.4 运行程序
 
 * 点击“本地Windows调试器”
-  * ![image-20230925160005737](C:\Users\10482\AppData\Roaming\Typora\typora-user-images\image-20230925160005737.png)
-  * ![image-20230925160056310](C:\Users\10482\AppData\Roaming\Typora\typora-user-images\image-20230925160056310.png)
+  * ![image](https://github.com/CoderSuHang/Cpp-Primer-Plus-Notes/assets/104765251/d18a31be-3966-40e6-8e35-34b778d96dac)
+
+  * ![image](https://github.com/CoderSuHang/Cpp-Primer-Plus-Notes/assets/104765251/7e4ac5ab-164d-4ffd-9731-e0f306015e7e)
+
 
 ### 2.1.2 程序结构介绍
 
@@ -108,7 +113,8 @@
 
   * 函数头：int main()
   * 函数体：{和}
-  * ![image-20230925161723285](C:\Users\10482\AppData\Roaming\Typora\typora-user-images\image-20230925161723285.png)
+  * ![image](https://github.com/CoderSuHang/Cpp-Primer-Plus-Notes/assets/104765251/9228fc19-077c-4a90-b5d1-a1f28128f2f5)
+
 
 ​	2、这里需要注意2点：
 
