@@ -1,4 +1,4 @@
-/*// carrots.cpp -- food processing program
+// carrots.cpp -- food processing program
 // uses and displays a variable
 
 #include <iostream>
@@ -17,4 +17,4 @@ int main()
 	carrots = carrots - 1;			//modify the variable
 	cout << "Cruch, cruch. Now I have " << carrots << " carrots." << endl;
 	return 0;
-}*/
+}
