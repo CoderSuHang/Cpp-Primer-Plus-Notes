@@ -1,4 +1,4 @@
-/*//getinfo.cpp -- input and output
+//getinfo.cpp -- input and output
 #include <iostream>
 
 int main()
@@ -13,4 +13,4 @@ int main()
 	carrots = carrots + 2;
 	cout << "now you have " << carrots << " carrots. " << endl;
 	return 0;
-}*/
+}
