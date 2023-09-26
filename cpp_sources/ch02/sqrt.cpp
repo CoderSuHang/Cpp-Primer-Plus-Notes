@@ -1,4 +1,3 @@
-/*
 // sqrt.cpp -- using the sqrt function
 
 #include <iostream>
@@ -18,4 +17,3 @@ int main()
 	cout << "How fascinating!" << endl;
 	return 0;
 }
-*/
