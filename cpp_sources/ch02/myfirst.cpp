@@ -1,4 +1,4 @@
-/*//myfirst.cpp -- 使用cout生成字符输出
+//myfirst.cpp -- 脢鹿脫脙cout脡煤鲁脡脳脰路没脢盲鲁枚
 
 #include <iostream>
 int main()
@@ -9,4 +9,4 @@ int main()
 	cout << "You won't regret it!" << endl;		//more output
 
 	return 0;
-}*/
+}
