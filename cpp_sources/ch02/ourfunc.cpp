@@ -1,4 +1,3 @@
-/*
 // ourfunc.cpp -- defining your own function
 #include <iostream>
 void simon(int);		// function prototype for simon()
@@ -21,4 +20,3 @@ void simon(int n)	   // define the simon() fuction
 	using namespace std;
 	cout << "Simon says touch your toes " << n << " times." << endl;
 }					   // void functions don't need teturn statements
-*/
