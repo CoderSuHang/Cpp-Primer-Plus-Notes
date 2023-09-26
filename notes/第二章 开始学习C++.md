@@ -253,3 +253,388 @@
   * 每个函数都有一个开始花括号和一个结束花括号，这两个花括号各占一行；
   * 函数中的语句都相对于花括号进行缩进；
   * 与函数名称相关的圆括号周围没有空白。
+
+
+
+### 2.2 C++语句
+
+* 例程：
+
+  * ``` c++
+    // carrots.cpp -- food processing program
+    // uses and displays a variable
+    
+    #include <iostream>
+    
+    int main()
+    {
+    	using namespace std;
+    
+    	int	carrots;					//declare an interger variable
+    
+    	carrots = 25;					//assign a value to the variable
+    	cout << "I have ";
+    	cout << carrots;				//display the value of the variable
+    	cout << " carrots.";
+    	cout << endl;
+    	carrots = carrots - 1;			//modify the variable
+    	cout << "Cruch, cruch. Now I have " << carrots << " carrots." << endl;
+    	return 0;
+    }
+    ```
+
+* 输出结果：
+
+  * ``` c++
+    I have 25 carrots.
+    Cruch, cruch. Now I have 24 carrots.
+    ```
+
+
+
+#### 2.2.1 声明语句和变量
+
+* 示例：
+
+  * ``` c++
+    int carrots;	//提供2条信息：需要的内存，以及该内存单元的名称
+    ```
+
+* 声明通常指出了要储存的数据类型和程序对储存在这里的数据使用的名称。
+* C++没有C（所有的变量声明通常都位于函数或过程的开始位置）这种限制，C++的做法是尽可能在首次使用变量前声明它。
+
+
+
+#### 2.2.2 赋值语句
+
+* 示例：
+
+  * ``` c++
+    carrots = 25;					//assign a value to the variable
+    ```
+
+* 赋值语句将赋值给储存单元；
+* 和C语言知识相似，不再赘述。
+
+
+
+#### 2.2.3 cout的新花样
+
+* 示例：
+
+  * ``` c++
+    cout << carrots;				//display the value of the variable
+    ```
+
+* 能够直接打印出定义好的整数；
+
+* 不用再像C一样用特殊代码（%s和%d）来指出要打印字符串还是整数。
+
+
+
+### 2.3 其他C++语句
+
+* 示例：
+
+  * ``` c++
+    //getinfo.cpp -- input and output
+    #include <iostream>
+    
+    int main()
+    {
+    	using namespace std;
+    
+    	int carrots;
+    
+    	cout << "How many carrots do you have?" << endl;
+    	cin >> carrots;
+    	cout <<  "Here are two more. ";
+    	carrots = carrots + 2;
+    	cout << "Now you have " << carrots << " carrots. " << endl;
+    	return 0;
+    }
+    ```
+
+* 输出结果：：
+
+  * ``` c++
+    How many carrots do you have?
+    25
+    Here are two more. Now you have 27 carrots.
+    ```
+
+
+
+#### 2.3.1 cin语句
+
+* 输出时，<<运算符将字符串插入到输出流中；
+* 输入时，cin使用>>运算符从输入流中抽取字符。
+
+
+
+#### 2.3.2 cout拼接功能
+
+* 示例：
+
+  * ``` c++
+    cout << "Now you have " << carrots << " carrots. " << endl;
+    ```
+
+* 也可以再代码很长时候这样：：
+
+  * ``` c++
+    cout << "Now you have "
+         << carrots
+         << " carrots. "
+         << endl;
+    ```
+
+
+
+#### 2.3.3 类简介
+
+* 类是用户定义的一种数据类型；类描述了一种数据类型的全部属性（包括可使用它执行的操作），对象是更具这些描述创建的实体。
+* cout是一个ostream类对象
+* cin是一个istream类对象
+
+
+
+### 2.4 函数
+
+* C++函数分两种：
+  * 有返回值
+  * 无返回值
+
+
+
+#### 2.4.1 有返回值的函数
+
+* 例如：
+
+  * ``` c++
+    x = sqrt(6.25);  //returns the value 2.5 and assigns it to x
+    ```
+
+  * ![image](https://github.com/CoderSuHang/Cpp-Primer-Plus-Notes/assets/104765251/3270715f-dfd7-4111-94d5-9f49743dfb31)
+
+
+* C++程序应当为程序中使用的每个函数提供原型
+
+  * 函数原型例如：
+
+  * ``` c++
+    double sqrt(double);
+    ```
+
+  * 库文件中包含了函数的编译代码，而头文件中则包含了原型。
+
+* 示例：
+
+  * ``` c++
+    // sqrt.cpp -- using the sqrt function
+    
+    #include <iostream>
+    #include <cmath>
+    
+    int main()
+    {
+    	using namespace std;
+    
+    	double area;
+    	cout << "Enter the floor area, in square feet, of your home: ";
+    	cin >> area;
+    	double side;
+    	side = sqrt(area);
+    	cout << "That's the equivalent of a square " << side
+    		 << " feet to the side." << endl;
+    	cout << "How fascinating!" << endl;
+    	return 0;
+    }
+    ```
+
+* 输出结果：
+
+  * ``` c++
+    Enter the floor area, in square feet, of your home: 100
+    That's the equivalent of a square 10 feet to the side.
+    How fascinating!
+    ```
+
+
+
+#### 2.4.2 函数变体
+
+* 需要使用多个参数的函数：
+
+  * ``` c++
+    double pow(double, double);
+    ```
+
+* 不接受任何参数的函数：
+
+  * ``` c++
+    int rand(void);
+    ```
+
+* 没有返回值的函数：
+
+  * ``` c++
+    void bucks(double);
+    ```
+
+
+
+#### 2.4.3 用户定义的函数
+
+* 放在mian( )函数之后
+
+* 示例：
+
+  * ``` c++
+    // ourfunc.cpp -- defining your own function
+    #include <iostream>
+    void simon(int);		// function prototype for simon()
+    
+    int main()
+    {
+    	using namespace std;
+    	
+    	simon(3);
+    	cout << "Pick an interger: ";
+    	int count;
+    	cin >> count;
+    	simon(count);
+    	cout << "Done!" << endl;
+    	return 0;
+    }
+    
+    void simon(int n)	   // define the simon() fuction
+    {
+    	using namespace std;
+    	cout << "Simon says touch your toes " << n << " times." << endl;
+    }					   // void functions don't need teturn statements
+    ```
+
+* 结果：
+
+  * ``` c++
+    Simon says touch your toes 3 times.
+    Pick an interger: 12
+    Simon says touch your toes 12 times.
+    Done!
+    ```
+
+* 结构如下：
+  * 1、函数格式
+  * 2、函数头
+
+
+
+#### 2.4.4 用户定义的有返回值的函数
+
+* 示例：
+
+  * ``` c++
+    // convert.cpp -- converts stone to pounds
+    #include <iostream>
+    int stoneolb(int);
+    
+    int main()
+    {
+    	using namespace std;
+    	
+    	int stone;
+    	cout << "Enter the weight in stone: ";
+    	cin >> stone;
+    	int pounds = stoneolb(stone);
+    	cout << stone << " stone = ";
+    	cout << pounds << " pounds" << endl;
+    	return 0;
+    }
+    
+    int stoneolb(int sts)
+    {
+    	return 14 * sts; //通过使用较为复杂的表达式，避免了创建一个新的变量，详情见P32
+    }
+    ```
+
+* 结果：
+
+  * ``` c++
+    Enter the weight in stone: 10
+    10 stone = 140 pounds
+    ```
+
+
+
+2.4.5 在多函数程序中使用using编译指令
+
+* 可将下面程序改写
+
+  * ``` c++
+    // ourfunc.cpp -- defining your own function
+    #include <iostream>
+    void simon(int);		// function prototype for simon()
+    
+    int main()
+    {
+    	using namespace std;
+    	
+    	simon(3);
+    	cout << "Pick an interger: ";
+    	int count;
+    	cin >> count;
+    	simon(count);
+    	cout << "Done!" << endl;
+    	return 0;
+    }
+    
+    void simon(int n)	   // define the simon() fuction
+    {
+    	using namespace std;
+    	cout << "Simon says touch your toes " << n << " times." << endl;
+    }					   // void functions don't need teturn statements
+    ```
+
+* 让两个函数都能访问名称空间，即：将编译指令放在函数的外面，且位于两个函数的前面：
+
+  * ``` c++
+    // ourfunc.cpp -- defining your own function
+    #include <iostream>
+    using namespace std;
+    void simon(int);		// function prototype for simon()
+    
+    int main()
+    {
+    	simon(3);
+    	cout << "Pick an interger: ";
+    	int count;
+    	cin >> count;
+    	simon(count);
+    	cout << "Done!" << endl;
+    	return 0;
+    }
+    
+    void simon(int n)	   // define the simon() fuction
+    {
+    	cout << "Simon says touch your toes " << n << " times." << endl;
+    }					   // void functions don't need teturn statements
+    ```
+
+* **当前**通行的**理念**是，**只让需要访问**名称空间**std**的**函数** **访问**它是更好的选择。
+
+* 让程序访问名称空间std的其中4种方法：
+
+  * 将`using namespace std;`放在函数定义之前，让文件中所有的函数都能够使用名称空间std中所有的元素。
+
+  * 将`using namespace std;`放在特定的函数定义中，让该函数能够使用名称空间std中的所有元素。
+
+  * 在特定的函数中使用类似`using std: :cout;`这样的编译指令，而不是`using namespace std;`，让该函数能够使用指定的元素，如`cout`。
+
+  * 完全不使用编译指令`using`，而在需要使用名称空间std中的元素时，使用前缀`std::`，如下所示:
+
+    * ``` c++
+      std::cout << "Something" << std::endl;
+      ```
+
+
