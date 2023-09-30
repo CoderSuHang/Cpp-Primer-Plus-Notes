@@ -1,4 +1,3 @@
-/*
 // divide.cpp -- integer and floating=point division
 #include <iostream>
 int main()
@@ -15,4 +14,3 @@ int main()
 	cout << 1.e7f / 9.0f << endl;
 	return 0;
 }
-*/
