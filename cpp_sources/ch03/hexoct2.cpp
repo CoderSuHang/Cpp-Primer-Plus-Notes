@@ -1,4 +1,3 @@
-/*
 // hexoct2.cpp -- shows hex and octal literals
 #include <iostream>
 
@@ -20,4 +19,3 @@ int main()
 	cout << "inseam = " << inseam << " (octal for 42)" << endl;
 	return 0;
 }
-*/
