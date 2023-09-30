@@ -1,5 +1,4 @@
-/*
-/ arith.cpp -- some C++ arithmetic
+// arith.cpp -- some C++ arithmetic
 #include <iostream>
 int main()
 {
@@ -19,4 +18,3 @@ int main()
 	cout << "hats / heads =" << hats / heads << endl;
 	return 0;
 }
-*/
