@@ -28,4 +28,3 @@ int main()
 	cout << "Bits per byte = " << CHAR_BIT << endl;
 	return 0;
 }
-*/
