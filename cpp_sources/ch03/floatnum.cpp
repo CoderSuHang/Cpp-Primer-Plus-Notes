@@ -1,10 +1,9 @@
-/*
 // floatnim.cpp -- floating-point types
 #include <iostream>
 int main()
 {
 	using namespace std;
-	cout.setf(ios_base::fixed, ios_base::floatfield); //µ÷ÓÃÆÈÊ¹Êä³öÊ¹ÓÃ¶¨µã±íÊ¾·¨£¬ÒÔ±ã¸üºÃµØÁË½â¾«¶È,Ëü·ÀÖ¹³ÌĞò°Ñ½Ï´óµÄÖµÇĞ»»ÎªE±íÊ¾·¨
+	cout.setf(ios_base::fixed, ios_base::floatfield); //è°ƒç”¨è¿«ä½¿è¾“å‡ºä½¿ç”¨å®šç‚¹è¡¨ç¤ºæ³•ï¼Œä»¥ä¾¿æ›´å¥½åœ°äº†è§£ç²¾åº¦,å®ƒé˜²æ­¢ç¨‹åºæŠŠè¾ƒå¤§çš„å€¼åˆ‡æ¢ä¸ºEè¡¨ç¤ºæ³•
 	float tub = 10.0 / 3.0;
 	double mint = 10.0 / 3.0;
 	const float million = 1.0e6;
@@ -18,4 +17,3 @@ int main()
 	cout << million * mint << endl;
 	return 0;
 }
-*/
