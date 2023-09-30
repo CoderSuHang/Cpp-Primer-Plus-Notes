@@ -1,4 +1,3 @@
-/*
 // morchar.cpp -- the char type and int type contrasted
 #include <iostream>
 
@@ -22,4 +21,3 @@ int main()
 	cout << endl << "Done" << endl;
 	return 0;
 }
-*/
