@@ -1,4 +1,3 @@
-/*
 // fltadd.cpp -- precision problems with float
 #include <iostream>
 
@@ -12,4 +11,3 @@ int main()
 	cout << "b - a = " << b - a << endl;
 	return 0;
 }
-*/
