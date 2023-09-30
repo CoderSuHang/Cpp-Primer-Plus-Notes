@@ -1,4 +1,3 @@
-/*
 // exceed.cpp -- exceeding some integer limits
 #include <iostream>
 #define ZERO 0			// makes ZERO symbol for 0 value
@@ -30,4 +29,3 @@ int main()
 	cout << " dollars deposited." << endl << "Lucky Sue!" << endl;
 	return 0;
 }
-*/
