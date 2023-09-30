@@ -1,4 +1,3 @@
-/*
 // chartype.cpp -- the char type
 #include <iostream>
 
@@ -13,4 +12,3 @@ int main()
 	cout << "Thak you for the " << ch << " character.\n";
 	return 0;
 }
-*/
