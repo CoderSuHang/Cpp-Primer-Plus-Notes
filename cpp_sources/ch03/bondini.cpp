@@ -1,4 +1,3 @@
-/*
 // bondini.cpp -- using escape sequences
 #include <iostream>
 
@@ -13,4 +12,3 @@ int main()
 	cout << "\aCode verified! Proceed with Plan Z3!\n";
 	return 0;
 }
-*/
