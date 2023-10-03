@@ -1,4 +1,3 @@
-/*
 // strtype2.cpp -- assigning, adding, and appending
 #include <iostream>
 #include <string>
@@ -25,4 +24,3 @@ int main() {
 
 	return 0;
 }
-*/
