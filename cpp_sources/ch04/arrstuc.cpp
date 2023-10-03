@@ -1,4 +1,3 @@
-/*
 // arrstruc.cpp -- an arry of structures
 #include <iostream>
 struct inflatable {
@@ -20,4 +19,3 @@ int main() {
 
 	return 0;
 }
-*/
