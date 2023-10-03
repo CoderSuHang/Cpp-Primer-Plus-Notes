@@ -1,4 +1,3 @@
-/*
 // assign_st -- assigning structures
 #include <iostream>
 struct inflatable{
@@ -25,4 +24,3 @@ int main() {
 
 	return 0;
 }
-*/
