@@ -1,4 +1,3 @@
-/*
 // address.cpp -- using the & operator to find addresses
 #include <iostream>
 
@@ -14,4 +13,3 @@ int main() {
 
 	return 0;
 }
-*/
