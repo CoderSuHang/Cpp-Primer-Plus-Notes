@@ -1,4 +1,4 @@
-/*// ch05_04_formore.cpp -- more looping with for
+// ch05_04_formore.cpp -- more looping with for
 #include <iostream>
 const int ARSIZE = 16;
 
@@ -11,4 +11,4 @@ int main() {
 		std::cout << i << "! = " << factorials[i] << std::endl;
 
 	return 0;
-}*/
+}
