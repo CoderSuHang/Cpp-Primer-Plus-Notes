@@ -1,4 +1,4 @@
-/*// ch05_03_express.cpp -- values of expressions
+// ch05_03_express.cpp -- values of expressions
 #include <iostream>
 int main() {
 	using namespace std;
@@ -18,4 +18,4 @@ int main() {
 	cout << (x > 3) << endl;
 
 	return 0;
-}*/
+}
