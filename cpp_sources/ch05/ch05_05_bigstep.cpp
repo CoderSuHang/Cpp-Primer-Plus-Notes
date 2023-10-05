@@ -1,4 +1,4 @@
-/*// ch05_05_bigstep.cpp -- cpunt as directed
+// ch05_05_bigstep.cpp -- cpunt as directed
 #include <iostream>
 int main() {
 	using std::cout;
@@ -13,4 +13,4 @@ int main() {
 		cout << i << endl;
 
 	return 0;
-}*/
+}
