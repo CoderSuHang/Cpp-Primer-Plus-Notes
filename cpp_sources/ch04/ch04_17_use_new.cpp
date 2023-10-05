@@ -1,4 +1,3 @@
-/*
 // use_new.cpp -- using the new operator
 #include <iostream>
 
@@ -25,4 +24,3 @@ int main() {
 
 	return 0;
 }
-*/
