@@ -1,4 +1,3 @@
-/*
 //int_ptr.cpp -- initialize a pointer
 #include <iostream>
 int main() {
@@ -13,4 +12,3 @@ int main() {
 
 	return 0;
 }
-*/
