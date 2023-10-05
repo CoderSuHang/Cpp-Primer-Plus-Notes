@@ -1,4 +1,3 @@
-/*
 // addpntrs.cpp -- pointer addition
 #include <iostream>
 int main() {
@@ -32,4 +31,3 @@ int main() {
 
 	return 0;
 }
-*/
