@@ -1,4 +1,4 @@
-/*// ch05_02_num_test.cpp -- use numeric test in for loop
+// ch05_02_num_test.cpp -- use numeric test in for loop
 #include <iostream>
 int main() {
 	using namespace std;
@@ -11,4 +11,4 @@ int main() {
 	cout << "Done now that i = " << i << endl;
 
 	return 0;
-}*/
+}
