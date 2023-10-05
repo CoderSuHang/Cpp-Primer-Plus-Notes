@@ -1,4 +1,4 @@
-/*// forloop -- introducing the for loop
+// forloop -- introducing the for loop
 #include <iostream>
 
 int main() {
@@ -10,4 +10,4 @@ int main() {
 	cout << "C++ knows when to stop.\n";
 
 	return 0;
-}*/
+}
