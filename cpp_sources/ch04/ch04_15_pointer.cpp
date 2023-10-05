@@ -1,4 +1,3 @@
-/*
 // pointer.cpp -- our first pointer variable
 #include <iostream>
 int main() {
@@ -18,4 +17,3 @@ int main() {
 
 	return 0;
 }
-*/
