@@ -1,4 +1,3 @@
-/*
 // newstrct.cpp -- using new with a stucture
 #include <iostream>
 struct inflatable {
@@ -23,4 +22,3 @@ int main() {
 
 	return 0;
 }
-*/
