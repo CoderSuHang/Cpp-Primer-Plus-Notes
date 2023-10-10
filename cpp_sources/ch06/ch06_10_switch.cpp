@@ -1,4 +1,4 @@
-/*// ch06_10_switch.cpp -- using the switch statement
+// ch06_10_switch.cpp -- using the switch statement
 #include <iostream>
 using namespace std;
 void showmenu();
@@ -45,4 +45,4 @@ void comfort() {
 	cout << "Your employees think you are the finest CEO\n"
 			"in the industry. The board of directors think\n"
 			"you are the finest CEO in the industry.\n";
-}*/
+}
