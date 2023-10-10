@@ -1,4 +1,4 @@
-/*// ch06_13_cinfish.cpp -- non-numeric input terminates loop
+// ch06_13_cinfish.cpp -- non-numeric input terminates loop
 #include <iostream>
 
 const int Max = 5;
@@ -26,4 +26,4 @@ int main() {
 	cout << "Done.\n";
 
 	return 0;
-}*/
+}
