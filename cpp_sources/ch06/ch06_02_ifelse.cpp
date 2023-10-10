@@ -1,4 +1,4 @@
-/*// ch06_02_ifelse.cpp -- using the if else statement
+// ch06_02_ifelse.cpp -- using the if else statement
 #include <iostream>
 int main() {
 	char ch;
@@ -17,4 +17,4 @@ int main() {
 	std::cout << "\nPlease excuse the slight confusion.\n";
 
 	return 0;
-}*/
+}
