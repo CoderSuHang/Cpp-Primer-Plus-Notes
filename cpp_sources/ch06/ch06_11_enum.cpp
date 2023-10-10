@@ -1,4 +1,4 @@
-/*// ch06_11_enum.cpp -- using enum
+// ch06_11_enum.cpp -- using enum
 #include <iostream>
 
 enum {red, orange, yellow, green, blue, violet, indigo};
@@ -23,4 +23,4 @@ int main() {
 	}
 	cout << "Bye.\n";
 	return 0;
-}*/
+}
