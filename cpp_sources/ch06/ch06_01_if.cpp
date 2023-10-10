@@ -1,4 +1,4 @@
-/*// ch06_01_if.cpp -- using the if statement
+// ch06_01_if.cpp -- using the if statement
 #include <iostream>
 int main() {
 	using std::cin;
@@ -19,4 +19,4 @@ int main() {
 	cout << " characters total in senternce\n";
 
 	return 0;
-}*/
+}
