@@ -1,4 +1,4 @@
-/*// ch06_12_jump.cpp -- using continue and break
+// ch06_12_jump.cpp -- using continue and break
 #include <iostream>
 const int ArSize = 80;
 int main() {
@@ -22,4 +22,4 @@ int main() {
 	cout << "Done.\n";
 
 	return 0;
-}*/
+}
