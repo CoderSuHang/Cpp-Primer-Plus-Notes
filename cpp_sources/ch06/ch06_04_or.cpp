@@ -1,4 +1,4 @@
-/*// ch06_04_or.cpp -- using the logical OR operator
+// ch06_04_or.cpp -- using the logical OR operator
 #include <iostream>
 const int Fave = 27;
 int main() {
@@ -19,4 +19,4 @@ int main() {
 			"I'll trash your disk anyway.\n";
 
 	return 0;
-}*/
+}
