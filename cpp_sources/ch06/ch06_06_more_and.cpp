@@ -1,4 +1,4 @@
-/*// ch06_06_more_and.cpp -- using the logical AND operator
+// ch06_06_more_and.cpp -- using the logical AND operator
 #include <iostream>
 
 const char* qualify[4] = {
@@ -27,4 +27,4 @@ int main() {
 	cout << "You qualify for the " << qualify[index];
 
 	return 0;
-}*/
+}
