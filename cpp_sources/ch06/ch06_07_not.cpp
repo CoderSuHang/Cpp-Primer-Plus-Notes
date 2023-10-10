@@ -1,4 +1,4 @@
-/*// ch06_07_not -- using the not operator
+// ch06_07_not -- using the not operator
 #include <iostream>
 #include <climits>
 
@@ -25,4 +25,4 @@ bool is_int(double x) {
 		return true;
 	else
 		return false;
-}*/
+}
