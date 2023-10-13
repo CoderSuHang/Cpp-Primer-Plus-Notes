@@ -285,3 +285,138 @@
 
 
 ### 7.3 函数和数组
+
+* 示例：
+
+  * ```c++
+    // ch07_05_arrfun1.cpp -- functions with an array argument
+    #include <iostream>
+    const int ArSize = 8;
+    int sum_arr(int arr[], int n);
+    int main() {
+    	using namespace std;
+    	int cookies[ArSize] = {1, 2, 4, 8, 16, 32, 64, 128};
+    
+    	int sum = sum_arr(cookies, ArSize);
+    	cout << "Total cookies eaten: " << sum << "\n";
+    
+    	return 0;
+    }
+    
+    int sum_arr(int arr[], int n) {
+    	int total = 0;
+    	for (int i = 0; i < n; i++)
+    		total = total + arr[i];
+    	return total;
+    }
+    ```
+
+* 结果：
+
+  * ```c++
+    Total cookies eaten: 255
+    ```
+
+  * 这看起来似乎合理。方括号指出 arr 是一个数组，而方括号为空则表明，可以将任何长度的数组传递给该函数。
+
+  * 但实际情况并非如此: arr 实际上并不是数组，而是一个指针！好消息是，在编写函数的其余部分时，可以将 arr 看作是数组。
+
+
+
+#### 7.3.1 函数如何使用指针来处理数组
+
+* C++将数组名视为指针，将数组名解释为其第一个元素的地址：
+
+  * ```c++
+    cookies == &cookies[0]
+    ```
+
+  * 例外：
+
+    * 数组声明使用数组名来标记存储位置；
+    * 对数组名使用 sizeof 将得到整个数组的长度(以字节为单位)；
+    * 将地址运算符&用于数组名时，将返回整个数组的地址，例如&cookies 将返回一个32字节内存块的地址(如果int长4字节)。
+
+* 正确的函数头应该是：
+
+  * ```c++
+    int sum_arr(int * arr, int n)
+    ```
+
+  * 但是前者函数头也是正确，即当且仅当用于函数头或函数原型时， int *arr 和 int arr[ ] 的含义是相同的。
+
+* 记住下面2个恒等式：
+
+  * ```c++
+    arr[i] == *(ar + i);
+    &arr[i] == ar + i;
+    ```
+
+  * 对于遍历数组而言，使用指针加法和数组下标时等效的。
+
+
+
+#### 7.3.2 将数组作为参数意味着什么
+
+* 传递常规变量时，函数将使用该变量的拷贝；
+
+* 但传递数组时，函数将使用原来的数组。
+
+* ![image-20231013172517848](C:\Users\10482\AppData\Roaming\Typora\typora-user-images\image-20231013172517848.png)
+
+* 示例：
+
+  * ```c++
+    // ch07_06_arrfun2.cpp -- functions with an array argument
+    #include <iostream>
+    const int ArSize = 8;
+    int sum_arr(int arr[], int n);
+    
+    int main() {
+    	int cookies[ArSize] = {1, 2, 4, 8, 16, 32, 64, 128};
+    	std::cout << cookies << " = array address, ";
+    	std::cout << sizeof cookies << " = sizeof cookies\n";
+    
+    	int sum = sum_arr(cookies, ArSize);
+    	std::cout << "Total cookies eaten: " << sum << std::endl;
+    
+    	sum = sum_arr(cookies, 3);
+    	std::cout << "First three eaters ate " << sum << " cookies.\n";
+    
+    	sum = sum_arr(cookies + 4, 4);
+    	std::cout << "Last four eaters ate " << sum << " cookies.\n";
+    
+    	return 0;
+    }
+    
+    int sum_arr(int arr[], int n) {
+    	int total = 0;
+    	std::cout << arr << " = arr, ";
+    	std::cout << sizeof arr << " = sizeof arr\n";
+    	for (int i = 0; i < n; i++)
+    		total = total + arr[i];
+    	return total;
+    }
+    ```
+
+* 结果：
+
+  * ```c++
+    003FFDB0 = array address, 32 = sizeof cookies
+    003FFDB0 = arr, 4 = sizeof arr
+    Total cookies eaten: 255
+    003FFDB0 = arr, 4 = sizeof arr
+    First three eaters ate 7 cookies.
+    003FFDC0 = arr, 4 = sizeof arr
+    Last four eaters ate 240 cookies.
+    ```
+
+  * 为将数组类型和元素数量告诉数组处理函数，请通过两个不同的参数来传递它们：
+
+    * ```c++
+      void fillArray(int arr[], int size);
+      ```
+
+
+
+#### 7.3.3 更多数组函数示例
