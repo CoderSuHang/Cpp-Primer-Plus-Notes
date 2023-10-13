@@ -362,7 +362,8 @@
 
 * 但传递数组时，函数将使用原来的数组。
 
-* ![image-20231013172517848](C:\Users\10482\AppData\Roaming\Typora\typora-user-images\image-20231013172517848.png)
+* ![image](https://github.com/CoderSuHang/Cpp-Primer-Plus-Notes/assets/104765251/73d79afb-75e8-4c71-835d-5b19891bea4c)
+
 
 * 示例：
 
