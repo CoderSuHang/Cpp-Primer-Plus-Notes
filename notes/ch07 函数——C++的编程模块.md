@@ -142,8 +142,10 @@
 
 * 用于接收传递值得变量被称为形参（argumernt）；
 * 传递给函数得值被称为实参（parameter）。
-* ![image-20231013104726504](C:\Users\10482\AppData\Roaming\Typora\typora-user-images\image-20231013104726504.png)
-* ![image-20231013104951679](C:\Users\10482\AppData\Roaming\Typora\typora-user-images\image-20231013104951679.png)
+* ![image](https://github.com/CoderSuHang/Cpp-Primer-Plus-Notes/assets/104765251/d1573343-0a57-473a-b475-0800002a04df)
+
+* ![image](https://github.com/CoderSuHang/Cpp-Primer-Plus-Notes/assets/104765251/0e371b12-d419-4981-8b17-65d74bb132d2)
+
 
 
 
