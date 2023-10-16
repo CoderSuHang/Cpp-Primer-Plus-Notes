@@ -421,3 +421,148 @@
 
 
 #### 7.3.3 更多数组函数示例
+
+* 1、填充数组
+
+  * P216
+  * 使用循环输入数据，设置限制长度，对问题输入进行判断；
+
+* 2、显示数组及用const保护数组
+
+  * P217
+  * 为防止函数无意中修改数组的内容，可在声明形参时使用关键字const
+
+* 3、修改数组
+
+  * P217
+  * 对数组进行的第三项操作是将每个元素与同一个重新评估因子相乘。
+  * 需要给函数传递3个参数：因子、数组和元素数目。该函数不需要返回值
+  * 会修改数组的值
+
+* 4、将上述代码组合起来：
+
+  * 例程：
+
+    * ```c++
+      // ch07_07_arrfun3.cpp -- array functions and const
+      #include <iostream>
+      const int Max = 5;
+      
+      int fill_array(double ar[], int limit);
+      void show_array(const double ar[], int n);
+      void revalue(double r, double ar[], int n);
+      
+      int main() {
+      	using namespace std;
+      	double properties[Max];
+      
+      	int size = fill_array(properties, Max);
+      	show_array(properties, size);
+      	if (size > 0) {
+      		cout << "Enter revaluation factor: ";
+      		double factor;
+      		while (!(cin >> factor)) {
+      			cin.clear();
+      			while (cin.get() != '\n')
+      				continue;
+      			cout << "Bad input; Please enter a number: ";
+      		}
+      		revalue(factor, properties, size);
+      		show_array(properties, size);
+      	}
+      	cout << "Done.\n";
+      	cin.get();
+      	cin.get();
+      
+      	return 0;
+      }
+      
+      int fill_array(double ar[], int limit) {
+      	using namespace std;
+      	double temp;
+      	int i;
+      	for (i = 0; i < limit; i++) {
+      		cout << "Enter value #" << (i + 1) << ": ";
+      		cin >> temp;
+      		if (!cin) {
+      			cin.clear();
+      			while (cin.get() != '\n')
+      				continue;
+      			cout << "Bad input; input process terminated.\n";
+      			break;
+      		}
+      		else if (temp < 0)
+      			break;
+      		ar[i] = temp;
+      	}
+      	return i;
+      }
+      
+      void show_array(const double ar[], int n) {
+      	using namespace std;
+      	for(int i = 0; i < n; i++) {
+      		cout << "Property #" << (i + 1) << ": $";
+      		cout << ar[i] << endl;
+      	}
+      }
+      
+      void revalue(double r, double ar[], int n) {
+      	for (int i = 0; i < n; i++)
+      		ar[i] *= r;
+      }
+      ```
+
+  * 结果：
+
+    * ```c++
+      Enter value #1: 100000
+      Enter value #2: 80000
+      Enter value #3: 222000
+      Enter value #4: 118000
+      Enter value #5: 240000
+      Property #1: $100000
+      Property #2: $80000
+      Property #3: $222000
+      Property #4: $118000
+      Property #5: $240000
+      Enter revaluation factor: 0.8
+      Property #1: $80000
+      Property #2: $64000
+      Property #3: $177600
+      Property #4: $94400
+      Property #5: $192000
+      Done.
+      ```
+
+    * ```c++
+      Enter value #1: 200000
+      Enter value #2: 84000
+      Enter value #3: 160000
+      Enter value #4: -2
+      Property #1: $200000
+      Property #2: $84000
+      Property #3: $160000
+      Enter revaluation factor: 1.20
+      Property #1: $240000
+      Property #2: $100800
+      Property #3: $192000
+      Done.
+      ```
+
+* 6、数组处理函数的常用编写方式
+
+  * 当处理double数组的函数时，需要修改数组：
+
+    * ```c++
+      void f_modify(double ar[], int n);
+      ```
+
+  * 如果不修改数组：
+
+    * ```c++
+      void _f_no_change(const double ar[], int n);
+      ```
+
+
+
+7.3.4 使用数组区间的函数
