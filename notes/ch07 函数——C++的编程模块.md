@@ -1121,3 +1121,59 @@
 
 
 ### 7.7 函数和 string 对象
+
+* 与数组相比，string对象与结构更相似。
+
+* 示例：
+
+  * ```c++
+    // ch07_14_topfive.cpp -- handling an array of string objects
+    #include <iostream>
+    #include <string>
+    
+    using namespace std;
+    const int SIZE = 5;
+    void display(const string sa[], int n);
+    
+    int main() {
+    	string list[SIZE];
+    	cout << "Enter your " << SIZE << " favorite astronomical sights:\n";
+    	for (int i = 0; i < SIZE; i++) {
+    		cout << i + 1 << ": ";
+    		getline(cin, list[i]);
+    	}
+    
+    	cout << "Your list:\n";
+    	display(list, SIZE);
+    
+    	return 0;
+    }
+    
+    void display(const string sa[], int n) {
+    	for (int i = 0; i < n; i++)
+    		cout << i + 1 << ": " << sa[i] << endl;
+    }
+    ```
+
+* 结果：
+
+  * ```c++
+    Enter your 5 favorite astronomical sights:
+    1: Orion Nebula
+    2: M13
+    3: Saturn
+    4: Jupiter
+    5: Moon
+    Your list:
+    1: Orion Nebula
+    2: M13
+    3: Saturn
+    4: Jupiter
+    5: Moon
+    ```
+
+  * 形参 sa 是一个指向 string 对象的指针，因此 sa[i] 是一个string对象。
+
+
+
+### 7.8 函数与 array 对象
