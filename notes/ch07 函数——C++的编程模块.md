@@ -893,3 +893,144 @@
 
 
 ### 7.6 函数和结构
+
+#### 7.6.1 传递和返回结构
+
+* 当结构比较小时，按值传递结构最合理。
+
+* 例程：
+
+  * ```C++
+    // ch07_11_travel.cpp -- using structures with functions
+    #include <iostream>
+    struct travel_time {
+    	int hours;
+    	int mins;
+    };
+    const int Mins_per_hr = 60;
+    
+    travel_time sum(travel_time t1, travel_time t2);
+    void show_time(travel_time t);
+    
+    int main() {
+    	using namespace std;
+    	travel_time day1 = { 5, 45 };
+    	travel_time day2 = { 4, 55 };
+    
+    	travel_time trip = sum(day1, day2);
+    	cout << "Two-day total: ";
+    	show_time(trip);
+    
+    	travel_time day3 = { 4, 32 };
+    	cout << "Three-day total: ";
+    	show_time(sum(trip, day3));
+    
+    	return 0;
+    }
+    
+    travel_time sum(travel_time t1, travel_time t2) {
+    	travel_time total;
+    
+    	total.mins = (t1.mins + t2.mins) % Mins_per_hr;
+    	total.hours = t1.hours + t2.hours +
+    		(t1.mins + t2.mins) / Mins_per_hr;
+    
+    	return total;
+    }
+    
+    void show_time(travel_time t) {
+    	using namespace std;
+    	cout << t.hours << " hours, "
+    		 << t.mins << " minutes\n";
+    }
+    ```
+
+* 示例：
+
+  * ```c++
+    Two-day total: 10 hours, 40 minutes
+    Three-day total: 15 hours, 12 minutes
+    ```
+
+
+
+#### 7.6.2 另一个处理结构的函数示例
+
+* 示例：
+
+  *  ```c++
+    // ch07_12_atrctfun.cpp -- functions with a structure argument
+    #include <iostream>
+    #include <cmath>
+    
+    struct polar {
+    	double distance;
+    	double angle;
+    };
+    
+    struct rect {
+    	double x;
+    	double y;
+    };
+    
+    polar rect_to_polar(rect xypos);
+    void show_polar(polar dapos);
+    
+    int main() {
+    	using namespace std;
+    
+    	rect rplace;
+    	polar pplace;
+    
+    	cout << "Enter the x and y values: ";
+    	while (cin >> rplace.x >> rplace.y) {
+    		pplace = rect_to_polar(rplace);
+    		show_polar(pplace);
+    		cout << "Next two numbers (q to quit): ";
+    	}
+    	cout << "Done.\n";
+    
+    	return 0;
+    }
+    
+    polar rect_to_polar(rect xypos) {
+    	using namespace std;
+    	polar answer;
+    
+    	//数学库中的sqrt()使用水平和垂直坐标来计算距离:
+    	answer.distance =
+    		sqrt(xypos.x * xypos.x + xypos.y * xypos.y);
+    	//数学库中的atan2()函数可根据x和y的值计算角度:
+    	answer.angle = atan2(xypos.y, xypos.x);
+    	return answer;
+    }
+    
+    void show_polar(polar dapos) {
+    	using namespace std;
+    	//弧度值乘以180/Π，约为57.29577951
+    	const double Rad_to_deg = 57.29577951;
+    
+    	cout << "distance = " << dapos.distance;
+    	cout << ", angle = " << dapos.angle * Rad_to_deg;
+    	cout << " degrees\n";
+    }
+     ```
+
+* 结果：
+
+  * ```c++
+    Enter the x and y values: 30 40
+    distance = 50, angle = 53.1301 degrees
+    Next two numbers (q to quit): -100 100
+    distance = 141.421, angle = 135 degrees
+    Next two numbers (q to quit): q
+    Done.
+    ```
+
+  * while (cin >> rplace.x >> rplace.y)
+
+    * cin >> 用作测试条件消除了排除特定数值的限制，能够接受任何有效的数字输入，无论正负，详情可看P233。
+
+
+
+#### 7.6.3 传递结构的地址
