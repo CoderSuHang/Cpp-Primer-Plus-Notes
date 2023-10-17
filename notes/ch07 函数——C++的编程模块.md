@@ -782,3 +782,114 @@
 * 比较难理解，用的时候看P254即可。
 
 
+
+### 7.5 函数和C-风格字符串
+
+* C-风格字符串由一系列字符组成，以空值字符结尾；
+* 可以使用 const 来禁止对字符串参数进行修改。
+
+
+
+#### 7.5.1 将C-风格字符串作为参数的函数
+
+* 将字符串作为参数传递给函数的3种表示方式：
+  * char 数组；
+  * 用引号括起的字符串常量；
+  * 被设置为字符串的地址和char指针。
+
+* 示例：
+
+  * ```C++	
+    // ch07_09_strgfun.cpp -- functions with a string argument
+    #include <iostream>
+    unsigned int c_in_str(const char* str, char ch);
+    
+    int main() {
+    	using namespace std;
+    	static char mmm[15] = "minimum";
+    	const char* wail = "ululate";
+    
+    	unsigned int ms = c_in_str(mmm, 'm');
+    	unsigned int us = c_in_str(wail, 'u');
+    
+    	cout << ms << " m characters in " << mmm << endl;
+    	cout << us << " u characters in " << wail << endl;
+    
+    	return 0;
+    }
+    
+    unsigned int c_in_str(const char* str, char ch) {
+    	unsigned int count = 0;
+    	while (*str) {
+    		if (*str == ch)
+    			count++;
+    		str++;
+    	}
+    	return count;
+    }
+    ```
+
+* 结果：
+
+  * ```C++
+    3 m characters in minimum
+    2 u characters in ululate
+    ```
+
+  * 使用指针表示法提醒读者注意，参数不一定必须是数组名，也可以是其他形式的指针。
+
+#### 7.5.2 返回C-风格字符串的函数
+
+* 函数无法返回一个字符串，但可以返回字符串的地址。
+
+* 示例：
+
+  * ```C++
+    // ch07_10_strgback.cpp -- a function that returns a pointer to char
+    #include <iostream>
+    char* buildstr(char c, int n);
+    int main() {
+    	using namespace std;
+    	int times;
+    	char ch;
+    
+    	cout << "Enter a character: ";
+    	cin >> ch;
+    
+    	cout << "Enter an integer: ";
+    	cin >> times;
+    	char* ps = buildstr(ch, times);
+    	cout << ps << endl;
+    	delete[] ps;
+    	ps = buildstr('+', 20);
+    	cout << ps << "-DONE-" << ps << endl;
+    	delete[] ps;
+    
+    	return 0;
+    }
+    
+    char* buildstr(char c, int n) {
+    	char* pstr = new char[n + 1];
+    	pstr[n] = '\0';
+    	while (n-- > 0)
+    		pstr[n] = c;
+    	return pstr;
+    }
+    ```
+
+* 结果：
+
+  * ```C++
+    Enter a character: V
+    Enter an integer: 46
+    VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV
+    ++++++++++++++++++++-DONE-++++++++++++++++++++
+    ```
+
+  * 要创建包含 n个字符的字符串，需要能够存储 n+1个字符的空间，以便能够存储空值字符。
+
+  * 注意，变量 pstr 的作用域为 buildstr 函数内，因此该函数结束时，pstr(而不是字符使用的内存将被释放。但由于函数返回了 pstr 的值，因此程序仍可以通过 mai()中的指针 ps 来访问新建的字符串。
+
+
+
+### 7.6 函数和结构
