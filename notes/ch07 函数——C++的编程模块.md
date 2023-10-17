@@ -1034,3 +1034,90 @@
 
 
 #### 7.6.3 传递结构的地址
+
+* 传递结构的地址比整个结构节省时间和空间。
+
+* 需要使用指向结构的指针；
+
+* 需要修改的3个地方：
+
+  * 调用函数时，将结构的地址 (&pplace) 而不是结构本身 (pplace) 传递给它；
+  * 将形参声明为指向 polar 的指针，即 polar *类型。由于函数不应该修改结构，因此使用了const 修饰符；
+  * 由于形参是指针而不是结构，因此应间接成员运算符(->)，而不是成员运算符(点)
+
+* 示例：
+
+  * ```c++
+    // ch07_13_strctptr.cpp -- functions with pointer to structure argument
+    #include <iostream>
+    #include <cmath>
+    
+    struct polar {
+    	double distance;
+    	double angle;
+    };
+    
+    struct rect {
+    	double x;
+    	double y;
+    };
+    
+    void rect_to_polar(const rect * pxy, polar * pda);
+    void show_polar(const polar * pda);
+    
+    int main() {
+    	using namespace std;
+    
+    	rect rplace;
+    	polar pplace;
+    
+    	cout << "Enter the x and y values: ";
+    	while (cin >> rplace.x >> rplace.y) {
+    		rect_to_polar(&rplace, &pplace);
+    		show_polar(&pplace);
+    		cout << "Next two numbers (q to quit): ";
+    	}
+    	cout << "Done.\n";
+    
+    	return 0;
+    }
+    
+    void rect_to_polar(const rect* pxy, polar* pda) {
+    	using namespace std;
+    
+    	//数学库中的sqrt()使用水平和垂直坐标来计算距离:
+    	pda->distance =
+    		sqrt(pxy->x * pxy->x + pxy->y * pxy->y);
+    	//数学库中的atan2()函数可根据x和y的值计算角度:
+    	pda->angle = atan2(pxy->y, pxy->x);
+    }
+    
+    void show_polar(const polar* pda) {
+    	using namespace std;
+    	//弧度值乘以180/Π，约为57.29577951
+    	const double Rad_to_deg = 57.29577951;
+    
+    	cout << "distance = " << pda->distance;
+    	cout << ", angle = " << pda->angle * Rad_to_deg;
+    	cout << " degrees\n";
+    }
+    ```
+
+* 结果：
+
+  * ```c++
+    Enter the x and y values: 30 40
+    distance = 50, angle = 53.1301 degrees
+    Next two numbers (q to quit): -100 100
+    distance = 141.421, angle = 135 degrees
+    Next two numbers (q to quit): q
+    Done.
+    ```
+
+  * 该例程使用的是指针，让函数能够对原始树结构进行操作
+
+  * 而前一个例程使用的是结构副本
+
+
+
+### 7.7 函数和 string 对象
