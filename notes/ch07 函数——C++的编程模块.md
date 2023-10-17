@@ -958,7 +958,7 @@
 
 * 示例：
 
-  *  ```c++
+  * ```c++
     // ch07_12_atrctfun.cpp -- functions with a structure argument
     #include <iostream>
     #include <cmath>
@@ -1014,7 +1014,7 @@
     	cout << ", angle = " << dapos.angle * Rad_to_deg;
     	cout << " degrees\n";
     }
-     ```
+    ```
 
 * 结果：
 
