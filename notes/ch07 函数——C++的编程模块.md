@@ -1441,4 +1441,127 @@
 
 #### 7.10.3 深入探讨函数指针
 
+* 使用多个函数，可以用一个函数指针数组表示P245:
+
+  * ```C++
+    const double * (*pa[3])(const double *, int) = {f1, f2, f3};
+    ```
+
+  * *pa[3]表明pa是一个包含三个指针的数组，难以理解，目前也不需要深究。
+
+* 调用方法：
+
+  * 获取函数地址（两种方法等价）：
+
+    * ```c++
+      const double * px = pa[0](av,3);
+      const double * py = (*pb[1])(av,3);
+      ```
+
+  * 获取指向double的值（两种方法等价）：
+
+    * ````c++
+      double x = *pa[0](av,3);
+      double y = *(*pb[1])(av,3);
+      ````
+
+* 示例：
+
+  * ```c++
+    // ch07_19_arfupt.cpp -- an array of function pointers
+    #include <iostream>
+    
+    const double* f1(const double ar[], int n);
+    const double* f2(const double [], int);
+    const double* f3(const double *, int);
+    
+    int main() {
+    	using namespace std;
+    	double av[3] = { 1112.3, 1542.6, 2227.9 };
+    	const double* (*p1)(const double*, int) = f1;
+    	auto p2 = f2;
+    	cout << "Using pointers to functions:\n";
+    	cout << " Address Value\n";
+    	cout << (*p1)(av, 3) << ": " << *(*p1)(av, 3) << endl;
+    	cout << p2(av, 3) << ": " << *p2(av, 3) << endl;
+    
+    	const double* (*pa[3])(const double*, int) = { f1, f2, f3 };
+    	auto pb = pa;
+    	cout << "\nUsing an array of pointers to functions:\n";
+    	cout << " Address Value\n";
+    
+    	for (int i = 0; i < 3; i++)
+    		cout << pa[i](av, 3) << ": " << *pa[i](av, 3) << endl;
+    	cout << "\nUsing a pointer to a pointer to a function:\n";
+    	cout << " Address Value\n";
+    	for (int i = 0; i < 3; i++)
+    		cout << pb[i](av, 3) << ": " << *pb[i](av, 3) << endl;
+    
+    	cout << "\nUsing pointers to an array of function pointers:\n";
+    	cout << " Address Value\n";
+    	auto pc = &pa;
+    	cout << (*pc)[0](av, 3) << ": " << *(*pc)[0](av, 3) << endl;
+    	const double* (*(*pd)[3])(const double*, int) = &pa;
+    	const double* pdb = (*pd)[1](av, 3);
+    	cout << pdb << ": " << *pdb << endl;
+    	cout << (*(*pd)[2])(av, 3) << ": " << *(*(*pd)[2])(av, 3) << endl;
+    
+    	return 0;
+    }
+    
+    const double* f1(const double * ar, int n) {
+    	return ar;
+    }
+    
+    const double* f2(const double ar[], int n) {
+    	return ar + 1;
+    }
+    
+    const double* f3(const double ar[], int n) {
+    	return ar + 2;
+    }
+    ```
+
+* 结果：
+
+  * ```c++
+    Using pointers to functions:
+     Address Value
+    00BDF8E8: 1112.3
+    00BDF8F0: 1542.6
+    
+    Using an array of pointers to functions:
+     Address Value
+    00BDF8E8: 1112.3
+    00BDF8F0: 1542.6
+    00BDF8F8: 2227.9
+    
+    Using a pointer to a pointer to a function:
+     Address Value
+    00BDF8E8: 1112.3
+    00BDF8F0: 1542.6
+    00BDF8F8: 2227.9
+    
+    Using pointers to an array of function pointers:
+     Address Value
+    00BDF8E8: 1112.3
+    00BDF8F0: 1542.6
+    00BDF8F8: 2227.9
+    ```
+
+  * 非常深奥，不少见，看看得了。
+
+
+
+#### 7.10.4 使用typedef进行简化
+
+* 将别名当做标识符进行声明，并在开头使用关键字 typedef。
+
+  * ```c++
+    typedef const double *(*p_fun)(const double *, int);
+    p_fun p1 = f1;
+    ```
+
+  * 见P248
+
 
