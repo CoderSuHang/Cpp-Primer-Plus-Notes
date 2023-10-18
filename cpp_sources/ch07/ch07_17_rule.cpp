@@ -1,4 +1,4 @@
-/*// ch07_17_ruler.cpp -- using recursion to subdivide a ruler
+// ch07_17_ruler.cpp -- using recursion to subdivide a ruler
 #include <iostream>
 const int Len = 66;
 const int Divs = 6;
@@ -30,4 +30,4 @@ void subdivide(char ar[], int low, int high, int level) {
 	ar[mid] = '|';
 	subdivide(ar, low, mid, level - 1);
 	subdivide(ar, mid, high, level - 1);
-}*/
+}
