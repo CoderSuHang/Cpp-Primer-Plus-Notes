@@ -1,4 +1,4 @@
-/*// ch07_01_calling.cpp -- defining, prototyping, and calling a fuction
+// ch07_01_calling.cpp -- defining, prototyping, and calling a fuction
 #include <iostream>
 void simple();
 
@@ -14,4 +14,4 @@ int main() {
 void simple() {
 	using namespace std;
 	cout << "I'm but a simple function.\n";
-}*/
+}
