@@ -1242,4 +1242,203 @@
 
 ### 7.9 递归
 
+#### 7.9.1 包含一个递归调用的递归
+
+* 如果递归函数调用自己，则被调用的函数也将调用自己，这将无限循环下去，除非代码中包含终止调用链的内容。
+
+* 通常的方法将递归调用放在if语句中。例如，vid类型的递归函数recurs()的代码如下:
+
+  * ```c++
+    void recurs(argumentlist){
+        statements1
+        if(test)
+            recurs(arguments)
+        statements2
+    }
+    ```
+
+  * 示例：
+
+    * ```c++
+      // ch07_16_recur.cpp -- using recursion
+      #include <iostream>
+      void countdown(int n);
+      
+      int main() {
+      	countdown(4);
+      
+      	return 0;
+      }
+      
+      void countdown(int n) {
+      	using namespace std;
+      	cout << "Counting down ... " << n << endl;
+      	if (n > 0)
+      		countdown(n - 1);
+      	cout << n << ": Kaboom!\n";
+      }
+      ```
+
+  * 结果：
+
+    * ```c++
+      Counting down ... 4
+      Counting down ... 3
+      Counting down ... 2
+      Counting down ... 1
+      Counting down ... 0
+      0: Kaboom!
+      1: Kaboom!
+      2: Kaboom!
+      3: Kaboom!
+      4: Kaboom!
+      ```
+
+    * 哈哈套娃
+
+
+
+#### 7.9.2 包含多个递归调用的递归
+
+* 在需要将一项工作不断分为两项较小的、类似的工作时，递归非常有用。
+
+* 分而治之策略：
+
+  * 例程：
+
+    * ```c++
+      // ch07_17_ruler.cpp -- using recursion to subdivide a ruler
+      #include <iostream>
+      const int Len = 66;
+      const int Divs = 6;
+      void subdivide(char ar[], int low, int high, int level);
+      int main() {
+      	char ruler[Len];
+      	int i;
+      	for (i = 0; i < Len - 2; i++)
+      		ruler[i] = ' ';
+      	ruler[Len - 1] = '\0';
+      	int max = Len - 2;
+      	int min = 0;
+      	ruler[min] = ruler[max] = '|';
+      	std::cout << ruler << std::endl;
+      	for (i = 1; i <= Divs; i++) {
+      		subdivide(ruler, min, max, i);
+      		std::cout << ruler << std::endl;
+      		for (int j = 1; j < Len - 2; j++)
+      			ruler[j] = ' ';
+      	}
+      
+      	return 0;
+      }
+      
+      void subdivide(char ar[], int low, int high, int level) {
+      	if (level == 0)
+      		return;
+      	int mid = (high + low) / 2;
+      	ar[mid] = '|';
+      	subdivide(ar, low, mid, level - 1);
+      	subdivide(ar, mid, high, level - 1);
+      }
+      ```
+
+  * 结果：
+
+    * ```c++
+      |                                                               |
+      |                               |                               |
+      |               |               |               |               |
+      |       |       |       |       |       |       |       |       |
+      |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |
+      | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | |
+      |||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+      ```
+
+
+
+### 7.10 函数指针
+
+#### 7.10.1 函数指针的基础知识
+
+* 1、获取函数的地址
+
+  * 只要使用函数名(后面不跟参数)即可：
+    * 如果think()是一个函数，那么think就是该函数的地址。
+
+* 2、声明函数指针
+
+  * 声明指向某种数据类型的指针时，必须指定指针指向的类型。
+  * 声明指向函数的指针时，也必须指定指针指向的函数类型。
+  * 详情参考P242：
+    * 要声明指向特定类型的函数的指针，可以首先编写这种函数的原型，然后用(*pf) 替换函数名。这样pf就是这类函数的指针。
+
+* 3、使用指针来调用函数
+
+  *  (* pf) 扮演的角色与函数名相同，因此使用 (*pf) 时，只需将它看作函数名即可:
+
+    * ```c++
+      double pam(int);
+      double (*pf)(int);
+      pf = pam;
+      double x = pam(4);
+      double y = (*pf)(5);
+      ```
+
+
+
+#### 7.10.2 函数指针示例
+
+* 示例：P243
+
+  * ```c++
+    // ch07_18_fun_ptr.cpp -- pointers to functions
+    #include <iostream>
+    double betsy(int);
+    double pam(int);
+    void estimate(int lines, double (*pf)(int));
+    
+    int main() {
+    	using namespace std;
+    	int code;
+    	cout << "How many lines of code do you need? ";
+    	cin >> code;
+    
+    	cout << "Here's Betsy's estimate:\n";
+    	estimate(code, betsy);
+    
+    	cout << "Here's Pam's estimate:\n";
+    	estimate(code, pam);
+    
+    	return 0;
+    }
+    
+    double betsy(int lns) {
+    	return 0.05 * lns;
+    }
+    
+    double pam(int lns) {
+    	return 0.03 * lns + 0.0004 * lns * lns;
+    }
+    
+    void estimate(int lines, double (*pf)(int)) {
+    	using namespace std;
+    	cout << lines << " lines will take ";
+    	cout << (*pf)(lines) << " hour(s)\n";
+    }
+    ```
+
+* 结果：
+
+  * ```c++
+    How many lines of code do you need? 30
+    Here's Betsy's estimate:
+    30 lines will take 1.5 hour(s)
+    Here's Pam's estimate:
+    30 lines will take 1.26 hour(s)
+    ```
+
+
+
+#### 7.10.3 深入探讨函数指针
+
 
