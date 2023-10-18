@@ -1,4 +1,4 @@
-/*// ch07_04_lotto.cpp -- probability of winning
+// ch07_04_lotto.cpp -- probability of winning
 #include <iostream>
 
 long double probability(unsigned numbers, unsigned picks);
@@ -27,4 +27,4 @@ long double probability(unsigned numbers, unsigned picks) {
 	for (n = numbers, p = picks; p > 0; n--, p--)
 		result = result * n / p;
 	return result;
-}*/
+}
