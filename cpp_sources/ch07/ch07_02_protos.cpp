@@ -1,4 +1,4 @@
-/*// ch07_02_protos.cpp -- using prototypes and function calls
+// ch07_02_protos.cpp -- using prototypes and function calls
 #include <iostream>
 void cheers(int);
 double cube(double x);
@@ -26,4 +26,4 @@ void cheers(int n) {
 
 double cube(double x) {
 	return x * x * x;
-}*/
+}
