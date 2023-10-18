@@ -1,4 +1,4 @@
-/*// ch07_09_strgfun.cpp -- functions with a string argument
+// ch07_09_strgfun.cpp -- functions with a string argument
 #include <iostream>
 unsigned int c_in_str(const char* str, char ch);
 
@@ -24,4 +24,4 @@ unsigned int c_in_str(const char* str, char ch) {
 		str++;
 	}
 	return count;
-}*/
+}
