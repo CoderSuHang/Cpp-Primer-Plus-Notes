@@ -1,4 +1,4 @@
-/*// ch07_16_recur.cpp -- using recursion
+// ch07_16_recur.cpp -- using recursion
 #include <iostream>
 void countdown(int n);
 
@@ -14,4 +14,4 @@ void countdown(int n) {
 	if (n > 0)
 		countdown(n - 1);
 	cout << n << ": Kaboom!\n";
-}*/
+}
