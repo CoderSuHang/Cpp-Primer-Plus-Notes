@@ -1,4 +1,4 @@
-/*// ch07_05_arrfun1.cpp -- functions with an array argument
+// ch07_05_arrfun1.cpp -- functions with an array argument
 #include <iostream>
 const int ArSize = 8;
 int sum_arr(int arr[], int n);
@@ -17,4 +17,4 @@ int sum_arr(int arr[], int n) {
 	for (int i = 0; i < n; i++)
 		total = total + arr[i];
 	return total;
-}*/
+}
