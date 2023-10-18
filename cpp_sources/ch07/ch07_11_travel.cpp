@@ -1,4 +1,4 @@
-/*// ch07_11_travel.cpp -- using structures with functions
+// ch07_11_travel.cpp -- using structures with functions
 #include <iostream>
 struct travel_time {
 	int hours;
@@ -39,4 +39,4 @@ void show_time(travel_time t) {
 	using namespace std;
 	cout << t.hours << " hours, "
 		 << t.mins << " minutes\n";
-}*/
+}
