@@ -1,4 +1,4 @@
-/*// ch07_03_twoarg.cpp -- a function with 2 arguments
+// ch07_03_twoarg.cpp -- a function with 2 arguments
 #include <iostream>
 using namespace std;
 void n_chars(char, int);
@@ -25,4 +25,4 @@ int main() {
 void n_chars(char c, int n) {
 	while (n-- > 0)
 		cout << c;
-}*/
+}
