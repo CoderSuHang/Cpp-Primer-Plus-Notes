@@ -1,4 +1,4 @@
-/*// ch08_02_firstref.cpp -- defning and using a reference
+// ch08_02_firstref.cpp -- defning and using a reference
 #include <iostream>
 int main() {
 	using namespace std;
@@ -16,4 +16,4 @@ int main() {
 	cout << ", rodents address = " << &rodents << endl;
 
 	return 0;
-}*/
+}
