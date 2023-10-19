@@ -1,4 +1,4 @@
-/*// ch08_01_inline.cpp -- using an inline function
+// ch08_01_inline.cpp -- using an inline function
 #include <iostream>
 inline double square(double x) { return x * x; }
 
@@ -16,4 +16,4 @@ int main() {
 	cout << "Now c = " << c << endl;
 
 	return 0;
-}*/
+}
