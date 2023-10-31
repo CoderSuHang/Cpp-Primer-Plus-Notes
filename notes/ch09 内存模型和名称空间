@@ -1,0 +1,152 @@
+## 第九章 内存模型和名称空间
+
+### 9.1 单独编译
+
+* 1、C++允许将组件函数放在独立的文件中。
+
+* 2、原来在一个文件内编写程序时，将支持函数放在main()函数之后。如果将原来文件分为两个，但是main()函数和支持函数使用了同一个数据结构声明。因此将一个程序放在多个文件中将引出新的问题：
+
+  * 解决办法：使用“#include”来处理这种情况，将结构声明放在头文件中，然后在每个源代码文件中都包含该头文件。
+  * 这样要修改结构声明时，只需在头文件中做一次改动即可。
+  * 另外，也可以将函数原型放在头文件中。
+  * 因此，可将原来的程序分为三部分：
+    * 头文件：包含结构声明和使用这些结构的函数的原型；
+    * 源代码文件：包含与结构有关的函数的代码；
+    * 源代码文件：包含调用与结构相关的函数的代码。
+
+* 3、📌不要将**函数定义**或**变量声明**放到头文件中。头文件中常包含的内容：
+
+  * 函数原型。
+  * 使用#define或const定义的符号常量。
+  * 结构声明。
+  * 类声明。
+  * 模板声明。
+  * 内联函数。
+
+* 4、示例：
+
+  * 程序清单09_01，程序清单09_02，程序清单09_03是将清单07_12分成个独部后得到的结果。
+
+  * 在包含头文件时，使用“coordin.h”而不是<coordin.h>。
+
+    * 如果文件名包含在尖括号中，则C++编译器将在储存标准头文件的主机系统的文件系统中查找；
+    * 但如果文件名包含在双引号中，则C++编译器将首先查找当前的工作目录或源代码目录。如果没有找到，则将在标准的位置查找。
+    * 因此在包含**自己**的头文件时，使用双引号。
+
+  * 图9.1简要地说明了在UNIX 系统中将该程序组合起来的步骤：
+
+    * ![image-20231031104927914](C:\Users\10482\AppData\Roaming\Typora\typora-user-images\image-20231031104927914.png)
+
+  * 警告：在IDE中，不要将头文件加入到项目列表中，也不要在源代码文件中使用#imclude 来包含其他源代码文件。
+
+  * ```c++
+    // ch09_01_coordin.h -- structyre templates and function prototypes
+    // structure templates
+    
+    #ifndef COORDIN_H_
+    #define COORDIN_H_
+    
+    struct polar {
+    	double distance;
+    	double angle;
+    };
+    
+    struct rect {
+    	double x;
+    	double y;
+    };
+    
+    // prototypes
+    polar rect_to_polar(rect xypos);
+    void show_polar(polar dapos);
+    
+    #endif
+    ```
+
+    * 仅当以前没有使用预处理编译指令#define定义名称COORDIN_H_时，才处理 #ifndef 和 #endif 之间的语句：
+
+      * ```c++
+        #ifndef COORDIN_H_
+        ...
+        #endif
+        ```
+
+    * 通常，使用 #define 语句来创建符号常量，如下所示：
+
+      * ```c++
+        #define MAXIMUM 4096
+        ```
+
+    * 但只要将 #define 用于名称，就足以完成该名称的定义：
+
+      * ```c++
+        #define COORDIN_H_
+        ```
+
+    * 程序清单09_01使用这种技术是为了将头文件内容包含在 #ifndef中：
+
+      * ```c++
+        #ifndef COORDIN_H_
+        #define COORDIN_H_
+        // place include file contents here
+        #endif
+        ```
+
+  * ```c++
+    // ch09_02_file1.cpp -- example of a three-file program
+    #include<iostream>
+    #include"coordin.h"
+    using namespace std;
+    int main() {
+    	rect rplace;
+    	polar pplace;
+    
+    	cout << "Enter the x and y values: ";
+    	while (cin >> rplace.x >> rplace.y) {
+    		pplace = rect_to_polar(rplace);
+    		show_polar(pplace);
+    		cout << "Next two numbers <q to quit>: ";
+    	}
+    	cout << "Bye!\n";
+    	return 0;
+    }
+    ```
+
+  * ```c++
+    // ch09_03_file2.cpp -- contains functions called in file1.cpp
+    #include<iostream>
+    #include<cmath>
+    #include"coordin.h"
+    
+    polar rect_to_polar(rect xypos) {
+    	using namespace std;
+    	polar answer;
+    
+    	answer.distance =
+    		sqrt(xypos.x * xypos.x + xypos.y * xypos.y);
+    	answer.angle = atan2(xypos.y, xypos.x);
+    	return answer;
+    }
+    
+    void show_polar(polar dapos) {
+    	using namespace std;
+    	const double Rad_to_deg = 57.29577951;
+    
+    	cout << "distance = " << dapos.distance;
+    	cout << ", angle = " << dapos.angle * Rad_to_deg;
+    	cout << " degrees\n";
+    }
+    ```
+
+  * ```c++
+    Enter the x and y values: 120 80
+    distance = 144.222, angle = 33.6901 degrees
+    Next two numbers <q to quit>: 120 50
+    distance = 130, angle = 22.6199 degrees
+    Next two numbers <q to quit>: q
+    Bye!
+    ```
+
+
+
+### 9.2 储存持续性、作用域和连接性
