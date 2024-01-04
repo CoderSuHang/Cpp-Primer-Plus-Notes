@@ -88,7 +88,7 @@ valarray 类由头文件valarray支持，这个类用于处理数值（或具有
 
   * 上述类将数据成员声明为私有的，即 Student 类的成员函数可以使用 string 和 valarray<double> 类的公有接口来访问和修改 name 和 scores 对象，但在类的外面不能这样做，而只能通过 Student 类的公有接口访问 name 和 score：
 
-    * ![image-20240104175928807](C:\Users\10482\AppData\Roaming\Typora\typora-user-images\image-20240104175928807.png)
+    * ![image](https://github.com/CoderSuHang/Cpp-Primer-Plus-Notes/assets/104765251/10f0c01f-f05b-4748-8fd7-4271932184ae)
     * 这种情况通常被描述为Student类获得了其成员对象的实现，但没有继承接口。
 
 接口和实现：
