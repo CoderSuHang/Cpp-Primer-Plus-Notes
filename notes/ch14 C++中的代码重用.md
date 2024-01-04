@@ -105,3 +105,120 @@ has-a关系：
 
 
 #### 14.1.3 Student 类示例
+
+程序清单：
+
+* 示例：
+
+  * ```c++
+    #pragma once
+    // ch14_01_student.h --  defining a Student Class using containment
+    #ifndef CH14_01_STUDENT_H_
+    #define CH14_01_STUDENT_H_
+    
+    #include <iostream>
+    #include <string>
+    #include <valarray>
+    
+    class Student
+    {
+    private:
+    	// 用ArrayDb类型简化表示std::valarray<double>
+    	typedef std::valarray<double> ArrayDb;
+    	std::string name;
+    	ArrayDb scores;
+    	// private method for scores output
+    	std::ostream& arr_out(std::ostream& os) const;
+    public:
+    	Student() : name("Null Student"), scores() {}
+    	explicit Student(const std::string & s)
+    		: name(s), scores() {}
+    	explicit Student(int n) : name("Nully"), scores(n) {}
+    	Student(const std::string & s, int n)
+    		: name(s), scores(n) {}
+    	Student(const std::string & s, const ArrayDb & a)
+    		: name(s), scores(a) {}
+    	Student(const char* str, const double* pd, int n)
+    		: name(str), scores(pd, n) {}
+    	~Student() {}
+    	double Average() const;
+    	const std::string& Name() const;
+    	double& operator[] (int i);
+    	double operator[] (int i) const;
+    // friends
+    	// input
+    	friend std::istream& operator>>(std::istream& is,
+    		Student& stu);	// 1 word
+    	friend std::istream& getline(std::istream& is,
+    		Student& stu);	// 1 line
+    	// output
+    	friend std::ostream& operator<<(std::ostream& os,
+    		const Student& stu);
+    };
+    
+    #endif
+    ```
+
+    * typedef了ArrayDb简化类型表示std::valarray<double>，放在私有部分定义意味着可以在Student类的实现中使用它，但在Student类外面不能使用。
+
+    * explicit关键字的用法：
+
+      * ```c++
+        explicit Student(const std::string & s)
+        		: name(s), scores() {}
+        explicit Student(int n) : name("Nully"), scores(n) {}
+        ```
+
+      * 可以用一个参数调用的构造函数将用作从参数类型到类类型的隐式转换函数；
+
+        * 但这样通常不好，第二个构造函数中，第一个参数表示数组的元素个数，而不是数组中的值，因此将一个构造函数用作 int 到 Student 的转换函数是没有意义的，所以使用 explicit 关闭隐式转换。
+
+      * 如果省略 explicit ，则可以：
+
+        * ```c++
+          Student doh("Homer", 10);	// store "Homer", create array of 10 elements
+          doh = 5;	// reset name to "Nully", reset to empty array of 5 elements
+          ```
+
+      * C++和约束
+
+        * C++包含的特性——**使用 explicit 防止单参数构造函数的隐式转换**，使用 const 限制方法修改数据，等等。
+        * 这样做的根本原因是: 在编译阶段出现错误优于在运行阶段出现错误。
+
+**1、初始化被包含的对象**
+
+* 构造函数初始化内置类型的成员语法：
+
+  * ```C++
+    Queue::Queue(int qs) : qsize(qs) {...};
+    ```
+
+  * 前面介绍的示例中的构造函数还使用成员初始化列表初始化派生对象的基类部分：
+
+    * ```c++
+      hasDMA::hasDMA(const hasDMA & hs) : baseDMA(hs) {...}
+      ```
+
+* 对于继承的对象，构造函数在成员初始化列表中使用类名来调用特定的基类构造函数。
+
+* 对于成员对象，构造函数则使用成员名：
+
+  * ```c++
+    Student(const char* str, const double* pd, int n)
+    		: name(str), scores(pd, n) {}
+    ```
+
+    * 因为该构造函数初始化的是成员对象，而不是继承的对象，所以在初始化列表中使用的是成员名，而不是类名。
+    * 初始化列表中的每一项都调用与之匹配的构造函数，即：
+      * name(str)调用构造函数 string(const char *)；
+      *  scores(pd, n)调用构造函数ArrayDb(const double *, int)
+
+* 如果不适用初始化列表语法，C++将使用成员对象所属类的默认构造函数。
+
+* 初始化顺序：
+  * 当初始化列表包含多个项目时，这些项目被初始化的顺序为它们被声明的顺序，而不是它们在初始化列表中的顺序。
+  * 但如果代码使用一个成员的值作为另一个成员的初始化表达式的一部分时，初始化顺序就非常重要。
+
+**2、使用被包含对象的接口**
+
+
