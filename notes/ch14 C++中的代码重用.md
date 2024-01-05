@@ -211,14 +211,250 @@ has-a关系：
     * 因为该构造函数初始化的是成员对象，而不是继承的对象，所以在初始化列表中使用的是成员名，而不是类名。
     * 初始化列表中的每一项都调用与之匹配的构造函数，即：
       * name(str)调用构造函数 string(const char *)；
-      *  scores(pd, n)调用构造函数ArrayDb(const double *, int)
+      * scores(pd, n)调用构造函数ArrayDb(const double *, int)
 
 * 如果不适用初始化列表语法，C++将使用成员对象所属类的默认构造函数。
 
 * 初始化顺序：
+
   * 当初始化列表包含多个项目时，这些项目被初始化的顺序为它们被声明的顺序，而不是它们在初始化列表中的顺序。
   * 但如果代码使用一个成员的值作为另一个成员的初始化表达式的一部分时，初始化顺序就非常重要。
 
 **2、使用被包含对象的接口**
 
+被包含对象的接口不是公有的，但可以在类方法中使用它:
+
+* 返回学生平均分数的函数：
+
+  * ```C++
+    double Student::Average() const
+    {
+        if (scores.size() > 0)
+            return scores.sum()/scores.size();
+        else
+            return 0;
+    }
+    ```
+
+  * Student 对象调用 Student 的方法，而后者使用被包含的 valarray 对象来调用 valarray 类的方法。
+
+* 也可以定义一个使用 string 版本的<<运算符的友元函数：
+
+  * ```c++
+    // use string version of operator<<()
+    ostream & operator<<(ostream & os, const Student & stu)
+    {
+        os << "Scores for " << stu.name << ":\n";
+        ...
+    }
+    ```
+
+  * stu.name 是一个 string 对象，operator<<(ostream & os, const Student & stu)必须是 Student 类的友元函数，这样才能访问 name 成员。
+
+* 定义了一个私有的辅助方法使用 valarray 的<<实现来进行输出：
+
+  * ```C++
+    // private method
+    ostream & Student::arr_out(ostream & os) const
+    {
+        int i;
+        int lim = scores.size();
+        if (lim > 0)
+        {
+            for (i = 0; i < lim; i++)
+            {
+                os << scores[i] << " ";
+                if (i % 5 == 4)
+                    os << endl;
+            }
+            if (i % 5 != 0)
+                os << endl;
+        }
+        else
+            os << " empty array ";
+        return os;
+    }
+    ```
+
+  * ```c++
+    // use string version of operator<<()
+    ostream & operator<<(ostream & os, const Student & stu)
+    {
+    	os << "Scores for " << stu.name << ":\n";
+        stu.arr_out(os);
+        return os;
+    }
+    ```
+
+程序清单：
+
+* 示例：
+
+  * ```c++
+    // ch14_02_student.cpp -- Student class using containment
+    #include "ch14_01_student.h"
+    
+    using std::ostream;
+    using std::endl;
+    using std::istream;
+    using std::string;
+    
+    // public methods
+    double Student::Average() const
+    {
+    	if (scores.size() > 0)
+    		return scores.sum() / scores.size();
+    	else
+    		return 0;
+    }
+    
+    const string& Student::Name() const
+    {
+    	return name;
+    }
+    
+    double & Student::operator[](int i)
+    {
+    	return scores[i];
+    }
+    
+    double Student::operator[](int i) const
+    {
+    	return scores[i];
+    }
+    
+    // private method
+    ostream& Student::arr_out(ostream& os) const
+    {
+        int i;
+        int lim = scores.size();
+        if (lim > 0)
+        {
+            for (i = 0; i < lim; i++)
+            {
+                os << scores[i] << " ";
+                if (i % 5 == 4)
+                    os << endl;
+            }
+            if (i % 5 != 0)
+                os << endl;
+        }
+        else
+            os << " empty array ";
+        return os;
+    }
+    
+    // friends
+    // use string version of operator>>()
+    istream& operator>>(istream& is, Student& stu)
+    {
+        is >> stu.name;
+        return is;
+    }
+    
+    // use string friend getline(ostream &, const string &
+    istream& getline(istream& is, Student& stu)
+    {
+        getline(is, stu.name);
+        return is;
+    }
+    
+    // use string version of operator<<()
+    ostream& operator<<(ostream& os, const Student& stu)
+    {
+        os << "Scores for " << stu.name << ":\n";
+        stu.arr_out(os);
+        return os;
+    }
+    ```
+
+**3、使用新的 Student 类**
+
+程序清单：
+
+* 示例：
+
+  * ```c++
+    // ch14_03_use_stuc.cpp -- using a composite class
+    // compile with student.cpp
+    #include <iostream>
+    #include "ch14_01_student.h"
+    
+    using std::cin;
+    using std::cout;
+    using std::endl;
+    
+    void set(Student& sa, int n);
+    const int pupils = 3;
+    const int quizzes = 5;
+    
+    int main()
+    {
+    	Student ada[pupils] = 
+    		{Student(quizzes), Student(quizzes), Student(quizzes)};
+    
+    	int i;
+    	for (i = 0; i < pupils; ++i)
+    		set(ada[i], quizzes);
+    	cout << "\nStudent List:\n";
+    	for (i = 0; i < pupils; ++i)
+    		cout << ada[i].Name() << endl;
+    	cout << "\nResults:";
+    	for (i = 0; i < pupils; ++i)
+    	{
+    		cout << endl << ada[i];
+    		cout << "average: " << ada[i].Average() << endl;
+    	}
+    	cout << "Done.\n";
+    	return 0;
+    }
+    
+    void set(Student& sa, int n)
+    {
+    	cout << "Please enter the student's name: ";
+    	getline(cin, sa);
+    	cout << "Please enter " << n << " quiz scores:\n";
+    	for (int i = 0; i < n; i++)
+    		cin >> sa[i];
+    	while (cin.get() != '\n')
+    		continue;
+    }
+    ```
+
+* 结果：
+
+  * ```c++
+    Please enter the student's name: Gil Bayts
+    Please enter 5 quiz scores:
+    92 94 96 93 95
+    Please enter the student's name: Pat Roone
+    Please enter 5 quiz scores:
+    83 89 72 78 95
+    Please enter the student's name: Fleur O'Day
+    Please enter 5 quiz scores:
+    92 89 96 74 64
+    
+    Student List:
+    Gil Bayts
+    Pat Roone
+    Fleur O'Day
+    
+    Results:
+    Scores for Gil Bayts:
+    92 94 96 93 95
+    average: 94
+    
+    Scores for Pat Roone:
+    83 89 72 78 95
+    average: 83.4
+    
+    Scores for Fleur O'Day:
+    92 89 96 74 64
+    average: 83
+    Done.
+    ```
+
+
+
+### 14.2 私有继承
 
