@@ -565,7 +565,7 @@ has-a关系：
 
   * 如果希望基类工具是共有的，可以在公有函数中使用私有私有函数，见P544：
 
-    * ![image-20240105165121611](C:\Users\10482\AppData\Roaming\Typora\typora-user-images\image-20240105165121611.png)
+    * ![image](https://github.com/CoderSuHang/Cpp-Primer-Plus-Notes/assets/104765251/0f8e96bf-fdac-4613-97b7-768640846704)
 
     * 包含使用对象来调用方法：
 
