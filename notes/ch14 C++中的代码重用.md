@@ -477,3 +477,90 @@ has-a关系：
 
 
 **14.2.1 Student 类示例**
+
+* 要使用**私有继承**，需**使用关键字 private** 而不是 public 来**定义类**：
+
+  * ```c++
+    class Student : private std::string, private std::valarray<double>
+    {
+    public:
+        ...
+    };
+    ```
+
+    * Student 类应从两个类派生而来。
+    * 使用多个基类的继承被称为多重继承（multiple inheritance，MI）：
+      * MI尤其是公有MI将导致一些问题，需要注意。
+    * 新的 Student 类不需要私有数据，因为两个基类已经提供了所需的所有数据成员
+      * <u>而上一节的包含版本提供了两个被显式命名的对象成员，而私有继承提供了两个无名称的子对象成员</u>【主要区别1】
+
+  **1、初始化基类组件**
+
+* 隐式地继承组件而不是成员对象将影响代码的编写，因为再也不能使用 name 和 scores 来描述对象了而必须使用用于公有继承的技术。例如，对于构造函数，包含将使这样的构造函数：
+
+  * ```c++
+    Student(const char* str, const double* pd, int n)
+    		: name(str), scores(pd, n) {}
+    ```
+
+* <u>对于继承类，新版构造函数将使用成员初始化列表语法，它使用类名而不是成员名来标识构造函数</u>【主要区别2】：
+
+  * ```c++
+    Student(const char* str, const double* pd, int n)
+    		: std::string(str), ArrayDb(pd, n) {}
+    ```
+
+* 示例：
+
+  * ```c++
+    #pragma once
+    // ch14_04_studenti.h -- defining a Student class using private inheritance
+    #ifndef CH14_04_STUDENC_H_
+    #define CH14_04_STUDENC_H_
+    
+    #include <iostream>
+    #include <string>
+    #include <valarray>
+    
+    class Student : private std::string, private std::valarray<double>
+    {
+    private:
+    	// 用ArrayDb类型简化表示std::valarray<double>
+    	typedef std::valarray<double> ArrayDb;
+    	// private method for scores output
+    	std::ostream& arr_out(std::ostream& os) const;
+    public:
+    	Student() : std::string("Null Student"), ArrayDb() {}
+    	explicit Student(const std::string& s)
+    		: std::string(s), ArrayDb() {}
+    	explicit Student(int n) : std::string("Nully"), ArrayDb(n) {}
+    	Student(const std::string& s, int n)
+    		: std::string(s), ArrayDb(n) {}
+    	Student(const std::string& s, const ArrayDb& a)
+    		: std::string(s), ArrayDb(a) {}
+    	Student(const char* str, const double* pd, int n)
+    		: std::string(str), ArrayDb(pd, n) {}
+    	~Student() {}
+    	double Average() const;
+    	double& operator[] (int i);
+    	double operator[] (int i) const;
+    	const std::string& Name() const;
+    	// friends
+    		// input
+    	friend std::istream& operator>>(std::istream& is,
+    		Student& stu);	// 1 word
+    	friend std::istream& getline(std::istream& is,
+    		Student& stu);	// 1 line
+    	// output
+    	friend std::ostream& operator<<(std::ostream& os,
+    		const Student& stu);
+    };
+    
+    #endif
+    ```
+
+**2、访问基类的方法**
+
+* 使用私有继承时，只能在派生类的方法中使用基类的方法。
+  * 如果希望基类工具是共有的，可以在公有函数中使用私有私有函数，见P544：
+    * ![image-20240105165121611](C:\Users\10482\AppData\Roaming\Typora\typora-user-images\image-20240105165121611.png)
