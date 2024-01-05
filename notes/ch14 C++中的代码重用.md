@@ -562,5 +562,38 @@ has-a关系：
 **2、访问基类的方法**
 
 * 使用私有继承时，只能在派生类的方法中使用基类的方法。
+
   * 如果希望基类工具是共有的，可以在公有函数中使用私有私有函数，见P544：
+
     * ![image-20240105165121611](C:\Users\10482\AppData\Roaming\Typora\typora-user-images\image-20240105165121611.png)
+
+    * 包含使用对象来调用方法：
+
+      * ```c++
+        double Student::Average() const
+        {
+            if (scores.size() > 0)
+                return scores.sum() / scores.size();
+            else
+                return 0;
+        }
+        ```
+
+    * 私有继承能够使用类名和作用域解析运算符来调用基类方法：
+
+      * ```c++
+        double Student::Average() const
+        {
+            if (ArrayDb::size() > 0)
+                return ArrayDb::sum() / ArrayDb::size();
+            else
+                return 0;
+        }
+        ```
+
+📌总之：
+
+* 使用**包含**时将使用**对象名**来调用方法；
+* 使用**私有继承**时将使用**类名**和**作用域解析运算符**来调用方法。
+
+**3、访问基类对象**
