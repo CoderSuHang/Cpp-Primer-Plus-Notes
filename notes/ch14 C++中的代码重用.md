@@ -847,7 +847,7 @@ has-a关系：
 * 使用私有继承时，第三代类将不能使用基类的接口，因为基类的公有方法在派生类中将变成私有方法；
 * 使用保护继承时，基类的公有方法在第二代中将变成受保护的，因此第三代派生类便可以使用它们。
 
-![image-20240108163307752](C:\Users\10482\AppData\Roaming\Typora\typora-user-images\image-20240108163307752.png)
+![image](https://github.com/CoderSuHang/Cpp-Primer-Plus-Notes/assets/104765251/877f1f45-485c-479c-b3ef-2c7237002e27)
 
 
 
