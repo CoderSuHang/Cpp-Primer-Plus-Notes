@@ -476,7 +476,7 @@ has-a关系：
 
 
 
-**14.2.1 Student 类示例**
+#### 14.2.1 Student 类示例
 
 * 要使用**私有继承**，需**使用关键字 private** 而不是 public 来**定义类**：
 
@@ -565,7 +565,7 @@ has-a关系：
 
   * 如果希望基类工具是共有的，可以在公有函数中使用私有私有函数，见P544：
 
-    * ![image](https://github.com/CoderSuHang/Cpp-Primer-Plus-Notes/assets/104765251/0f8e96bf-fdac-4613-97b7-768640846704)
+    * ![image-20240105165121611](C:\Users\10482\AppData\Roaming\Typora\typora-user-images\image-20240105165121611.png)
 
     * 包含使用对象来调用方法：
 
@@ -598,5 +598,208 @@ has-a关系：
 
 **3、访问基类对象**
 
+使用作用域解析运算符可以访问基类的方法，但如果使用基类对象本身，需要强制类型转换来返回：
 
-20230107
+* Student 类是从 string 类派生出来的，因此可以通过强制类型转换，将 Student 对象转换为 string 对象。
+
+* 指针 this 指向用来调用方法的对象，因此可以 *this 为用来调用方法的对象。
+
+* 为避免调用构造函数创建新对象，可以使用强制转换类型来创建一个引用：
+
+  * ```c++
+    const string & Student::Name() const
+    {
+        return (const string &) *this;
+    }
+    ```
+
+**4、访问基类的友元函数**
+
+用类名显式地限定函数名不适合于友元函数，因为友元函数不属于类。然而，可以通过显式转换为基类来调用正确的函数：
+
+* ```c++
+  ostream & operator<<(ostream & os, const Student & stu)
+  {
+      os << "Scores for " < (const String &)stu << ":\n";
+      ...
+  }
+  ```
+
+* 显式地将 stu 转换为 string 对象引用，进而调用函数 operator<<(ostream &, const String &)。
+
+* 引用 stu 不会自动转换为 string 引用，根本原因在于，在私有继承中，在不进行显式类型转换的情况下，**不能将指向派生类的引用或指针赋给基类引用或指针**。
+
+  * 然而，即使这个例子使用的是公有继承，也必须使用显式类型转换。原因之一是，如果不使用类型转换，下述代码将与友元函数原型匹配，从而导致递归调用。
+  * 另一个原因是，由于这个类使用的是多重继承，编译器将无法确定应转换成哪个基类，如果两个基类都提供了函数 operator<<()。
+
+程序清单：
+
+* 示例：
+
+  * ```c++
+    // ch14_05_studenti.cpp -- Student class using private inheritance
+    #include "ch14_04_studenti.h"
+    using std::ostream;
+    using std::endl;
+    using std::istream;
+    using std::string;
+    
+    // public methods
+    double Student::Average() const
+    {
+    	if (ArrayDb::size() > 0)
+    		return ArrayDb::sum() / ArrayDb::size();
+    	else
+    		return 0;
+    }
+    
+    const string& Student::Name() const
+    {
+    	return (const string&)*this;
+    }
+    
+    double& Student::operator[](int i)
+    {
+    	return ArrayDb::operator[](i);
+    }
+    
+    double Student::operator[](int i) const
+    {
+    	return ArrayDb::operator[](i);
+    }
+    
+    // private method
+    ostream& Student::arr_out(ostream& os) const
+    {
+    	int i;
+    	int lim = ArrayDb::size();
+    	if (lim > 0)
+    	{
+    		for (i = 0; i < lim; i++)
+    		{
+    			os << ArrayDb::operator[](i) << " ";
+    			if (i % 5 == 4)
+    				os << endl;
+    		}
+    		if (i % 5 != 0)
+    			os << endl;
+    	}
+    	else
+    		os << " empty array ";
+    	return os;
+    }
+    
+    // friends
+    // use String version of operator>>()
+    istream& operator>>(istream& is, Student& stu)
+    {
+    	is >> (string&)stu;
+    	return is;
+    }
+    
+    // use String friend getline(ostream &, const string &)
+    istream& getline(istream& is, Student& stu)
+    {
+    	getline(is, (string&)stu);
+    	return is;
+    }
+    
+    // use string version of operator<<()
+    ostream& operator<<(ostream& os, const Student& stu)
+    {
+    	os << "Scoreas for " << (const string&)stu << ":\n";
+    	stu.arr_out(os);
+    	return os;
+    }
+    ```
+
+**5、使用修改后的 Student 类**
+
+由于上述两个版本的 Student 类的公有接口完全相同，因此可以使用同一个程序测试，唯一不同在于包含的文件有变化：
+
+* 示例：
+
+  * ```c++
+    // ch14_06_use_stui.cpp -- using a composite class
+    // compile with student.cpp
+    #include <iostream>
+    #include "ch14_04_studenti.h"
+    
+    using std::cin;
+    using std::cout;
+    using std::endl;
+    
+    void set(Student& sa, int n);
+    const int pupils = 3;
+    const int quizzes = 5;
+    
+    int main()
+    {
+    	Student ada[pupils] =
+    	{ Student(quizzes), Student(quizzes), Student(quizzes) };
+    
+    	int i;
+    	for (i = 0; i < pupils; ++i)
+    		set(ada[i], quizzes);
+    	cout << "\nStudent List:\n";
+    	for (i = 0; i < pupils; ++i)
+    		cout << ada[i].Name() << endl;
+    	cout << "\nResults:";
+    	for (i = 0; i < pupils; ++i)
+    	{
+    		cout << endl << ada[i];
+    		cout << "average: " << ada[i].Average() << endl;
+    	}
+    	cout << "Done.\n";
+    	return 0;
+    }
+    
+    void set(Student& sa, int n)
+    {
+    	cout << "Please enter the student's name: ";
+    	getline(cin, sa);
+    	cout << "Please enter " << n << " quiz scores:\n";
+    	for (int i = 0; i < n; i++)
+    		cin >> sa[i];
+    	while (cin.get() != '\n')
+    		continue;
+    }
+    ```
+
+* 结果：
+
+  * ```c++
+    Please enter the student's name: Gil Bayts
+    Please enter 5 quiz scores:
+    92 94 96 93 95
+    Please enter the student's name: Pat Roone
+    Please enter 5 quiz scores:
+    83 89 72 78 95
+    Please enter the student's name: Fleur O'Day
+    Please enter 5 quiz scores:
+    92 89 96 74 64
+    
+    Student List:
+    Gil Bayts
+    Pat Roone
+    Fleur O'Day
+    
+    Results:
+    Scoreas for Gil Bayts:
+    92 94 96 93 95
+    average: 94
+    
+    Scoreas for Pat Roone:
+    83 89 72 78 95
+    average: 83.4
+    
+    Scoreas for Fleur O'Day:
+    92 89 96 74 64
+    average: 83
+    Done.
+    ```
+
+
+
+#### 14.2.2 使用包含还是私有继承
+
