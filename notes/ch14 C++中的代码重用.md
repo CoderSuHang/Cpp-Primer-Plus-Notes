@@ -827,3 +827,69 @@ has-a关系：
 
 #### 14.2.3 保护继承
 
+保护继承是私有继承的变体：
+
+* 保护继承在列出基类时使用关键字 **protected**
+
+  * ```c++
+    class Student : protected std::string, peotected std::valarray<double>
+    {
+        ...
+    };
+    ```
+
+* 使用保护继承时，基类的公有成员和保护成员都将成为派生类的保护成员。
+
+* 和私有继承一样，基类的接口在派生类中也是可用的，但在继承层次结构之外是不可用的。
+
+当从派生类派生出另一个类时，私有继承和保护继承之间的主要区别便呈现出来：
+
+* 使用私有继承时，第三代类将不能使用基类的接口，因为基类的公有方法在派生类中将变成私有方法；
+* 使用保护继承时，基类的公有方法在第二代中将变成受保护的，因此第三代派生类便可以使用它们。
+
+![image-20240108163307752](C:\Users\10482\AppData\Roaming\Typora\typora-user-images\image-20240108163307752.png)
+
+
+
+#### 14.2.4 使用 using 重新定义访问权限
+
+使用保护派生或私有派生时，基类的公有成员将成为保护成员或私有成员。如果要让基类的方法在派生类外面可用，有两个方法：
+
+* 方法一：
+
+  * 定义一个使用该基类方法的派生类方法：
+
+    * 假设希望 Student 类能够使用 valarray 类的 sum() 方法，可以在 Student 类的声明中声明一个 sum() 方法，然后像下面这样定义该方法：
+
+      * ```c++
+        double Student::sum() const
+        {
+            return std::valarray<double>::sum();
+        }
+        ```
+
+* 方法二：
+
+  * 将函数调用包装在另一个函数调用中，即使用一个 using 声明（就像名称空间那样）来指出派生类可以使用特定的基类成员，即使采用的是私有派生。
+
+    * 假设希望通过 Student 类能够使用 valarray 的方法 min() 和 max()，可以在 student.h 的公有部分加入如下 using 声明：
+
+      * ```c++
+        class Student : private std::string, private std::valarray<double>
+        {
+        ...
+        public:
+            using std::valarray<double>::min;
+            using std::valarray<double>::max;
+            ...
+        };
+        ```
+
+      * ❗using 声明只是用成员名——没有圆括号、函数特征标和返回类型。
+
+        * 这将使两个版本（const 和非 const）都可用；
+        * using 声明只适用于继承，而不适用于包含。
+
+
+
+### 14.3 多重继承
