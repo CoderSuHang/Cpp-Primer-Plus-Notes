@@ -1060,7 +1060,8 @@ MI 使用方法：
 
     * 报错：const char* 类型不能用于初始化char* 类型实体
 
-      * ![image-20240109203115737](C:\Users\10482\AppData\Roaming\Typora\typora-user-images\image-20240109203115737.png)
+      * ![image](https://github.com/CoderSuHang/Cpp-Primer-Plus-Notes/assets/104765251/e21a0812-d48f-4b8c-8b7b-497329c3d222)
+
 
       * 解决办法：
 
