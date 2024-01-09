@@ -893,3 +893,249 @@ has-a关系：
 
 
 ### 14.3 多重继承
+
+多重继承（multiple inheritance，MI）描述的是有多个直接基类的类。与单继承一样，**公有MI**表示也是 is-a 关系：（**私有 MI** 和**保护 MI** 可以表示 has-a 关系）
+
+* 必须使用关键字 **public** 来限定每一个基类。
+
+  * ```c++
+    class SingingWaiter : public Waiter, public Singer {...}
+    ```
+
+  * 因为除非特别指出，否则编译器将认为是私有派生:
+
+    * ```c++
+      class SingingWaiter : public Waiter, Singer {...} // Singer is a private a base
+      ```
+
+MI 会带来的主要问题：
+
+* 从两个不同的基类继承同名方法；
+* 从两个或多个相关基类那里继承同一个类的多个实例。
+
+MI 使用方法：
+
+* 首先，定义一个抽象基类 Worker，并使用它派生出 Waiter 类和 Singer 类；
+
+* 然后，使用 MI 从 Waiter 类和 Singer 类派生出 SingingWaiter 类。
+
+  * ![image-20240108165808351](C:\Users\10482\AppData\Roaming\Typora\typora-user-images\image-20240108165808351.png)
+
+* 示例：
+
+  * ```c++
+    #pragma once
+    // ch14_07_worker0.h -- working classes
+    #ifndef CH14_07_WORKER0_H_
+    #define CH14_07_WORKER0_H_
+    
+    #include <string>
+    
+    class Worker
+    {
+    private:
+    	std::string fullname;
+    	long id;
+    public:
+    	Worker() : fullname("no one"), id(0L) {}
+    	Worker(const std::string & s, long n)
+    		: fullname(s), id(n) {}
+    	virtual ~Worker() = 0;
+    	virtual void Set();
+    	virtual void Show() const;
+    };
+    
+    class Waiter : public Worker
+    {
+    private:
+    	int panache;
+    public:
+    	Waiter() : Worker(), panache(0) {}
+    	Waiter(const std::string & s, long n, int p = 0)
+    		: Worker(s, n), panache(p) {}
+    	Waiter(const Worker & wk, int p = 0)
+    		: Worker(wk), panache(p) {}
+    	void Set();
+    	void Show() const;
+    };
+    
+    class Singer : public Worker
+    {
+    protected:
+    	enum {other, alto, contralto, soprano,
+    				bass, baritone, tenor};
+    	enum {Vtypes = 7};
+    private:
+    	static char* pv[Vtypes];	// string equivs of voice types
+    	int voice;
+    public:
+    	Singer() : Worker(), voice(other) {}
+    	Singer(const std::string & s, long n, int v = other)
+    		: Worker(s, n), voice(v) {}
+    	Singer(const Worker & wk, int v = other)
+    		: Worker(wk), voice(v) {}
+    	void Set();
+    	void Show() const;
+    };
+    #endif
+    ```
+
+  * ```c++
+    // ch14_08_worker0.cpp -- working class methods
+    #include "ch14_07_worker0.h"
+    #include <iostream>
+    
+    using std::cout;
+    using std::cin;
+    using std::endl;
+    // worker methods
+    
+    // must implement virtual destructor, even if pure
+    Worker::~Worker() {}
+    
+    void Worker::Set()
+    {
+    	cout << "Enter worker's name: ";
+    	getline(cin, fullname);
+    	cout << "Enter worker's ID: ";
+    	cin >> id;
+    	while (cin.get() != '\n')
+    		continue;
+    }
+    
+    void Worker::Show() const
+    {
+    	cout << "Name: " << fullname << "\n";
+    	cout << "Employee ID: " << id << "\n";
+    }
+    
+    // Waiter methods
+    void Waiter::Set()
+    {
+    	Worker::Set();
+    	cout << "Enter waiter's panache rating: ";
+    	cin >> panache;
+    	while (cin.get() != '\n')
+    		continue;
+    }
+    
+    void Waiter::Show() const
+    {
+    	cout << "Category: waiter\n";
+    	Worker::Show();
+    	cout << "Panache rating: " << panache << "\n";
+    }
+    
+    // Singer methods
+    char* Singer::pv[] = {(char*)"other", (char*)"alto", (char*)"contralto",
+    				(char*)"soprano", (char*)"bass", (char*)"baritone", (char*)"tenor"};
+    
+    void Singer::Set()
+    {
+    	Worker::Set();
+    	cout << "Enter number for singer's vocal range:\n";
+    	int i;
+    	for (i = 0; i < Vtypes; i++)
+    	{
+    		cout << i << ": " << pv[i] << "   ";
+    		if (i % 4 == 3)
+    			cout << endl;
+    	}
+    	if (i % 4 != 0)
+    		cout << endl;
+    	while (cin >> voice && (voice < 0 || voice >= Vtypes))
+    		cout << "Please enter a value >= 0 and < " << Vtypes << endl;
+    
+    	while (cin.get() != '\n')
+    		continue;
+    }
+    
+    void Singer::Show() const
+    {
+    	cout << "Category: singer\n";
+    	Worker::Show();
+    	cout << "Vocal range: " << pv[voice] << endl;
+    }
+    ```
+
+    * 报错：const char* 类型不能用于初始化char* 类型实体
+
+      * ![image-20240109203115737](C:\Users\10482\AppData\Roaming\Typora\typora-user-images\image-20240109203115737.png)
+
+      * 解决办法：
+
+        * 1、强制类型转换：
+
+          * ```c++
+            char* Singer::pv[] = {(char*)"other", (char*)"alto", (char*)"contralto",
+            				(char*)"soprano", (char*)"bass", (char*)"baritone", (char*)"tenor"};
+            ```
+
+        * 2、更改属性：
+
+          * ```c++
+            右键项目->属性->C/C++->语言->符合模式：选择否
+            ```
+
+  * ```c++
+    // ch14_09_worktest.cpp -- test worker class hierarchy
+    #include <iostream>
+    #include "ch14_07_worker0.h"
+    
+    const int LIM = 4;
+    int main()
+    {
+    	Waiter bob("Bob Apple", 314L, 5);
+    	Singer bev("Beverly Hills", 522L, 3);
+    	Waiter w_temp;
+    	Singer s_temp;
+    
+    	Worker* pw[LIM] = { &bob, &bev, &w_temp, &s_temp };
+    
+    	int i;
+    	for (i = 2; i < LIM; i++)
+    		pw[i]->Set();
+    	for (i = 0; i < LIM; i++)
+    	{
+    		pw[i]->Show();
+    		std::cout << std::endl;
+    	}
+    
+    	return 0;
+    }
+    ```
+
+* 结果：
+
+  * ```c++
+    Enter worker's name: Waldo Dropmaster
+    Enter worker's ID: 442
+    Enter waiter's panache rating: 3
+    Enter worker's name: Sylvie Sirenne
+    Enter worker's ID: 555
+    Enter number for singer's vocal range:
+    0: other   1: alto   2: contralto   3: soprano
+    4: bass   5: baritone   6: tenor
+    3
+    Category: waiter
+    Name: Bob Apple
+    Employee ID: 314
+    Panache rating: 5
+    
+    Category: singer
+    Name: Beverly Hills
+    Employee ID: 522
+    Vocal range: soprano
+    
+    Category: waiter
+    Name: Waldo Dropmaster
+    Employee ID: 442
+    Panache rating: 3
+    
+    Category: singer
+    Name: Sylvie Sirenne
+    Employee ID: 555
+    Vocal range: soprano
+    ```
+
+#### 14.3.1 有多少 Worker
