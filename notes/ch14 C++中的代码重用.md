@@ -919,7 +919,7 @@ MI 使用方法：
 
 * 然后，使用 MI 从 Waiter 类和 Singer 类派生出 SingingWaiter 类。
 
-  * ![image-20240108165808351](C:\Users\10482\AppData\Roaming\Typora\typora-user-images\image-20240108165808351.png)
+  * ![image](https://github.com/CoderSuHang/Cpp-Primer-Plus-Notes/assets/104765251/5ac378b0-e8e4-4541-bd7d-354d5a5bfb72)
 
 * 示例：
 
