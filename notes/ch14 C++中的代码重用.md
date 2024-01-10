@@ -1186,7 +1186,7 @@ MI 使用方法：
 
   * 现在 SingerWaiter 对象只包含 Worker 对象的一个副本。两个对象共享一个 Worker 对象，而不是各自引入自己的 Worker 对象副本：
 
-    * ![image-20240110164621635](C:\Users\10482\AppData\Roaming\Typora\typora-user-images\image-20240110164621635.png)
+    * ![image](https://github.com/CoderSuHang/Cpp-Primer-Plus-Notes/assets/104765251/43763373-e297-459f-bf52-f42de290812c)
 
 * 为什么不抛弃将基类声明为虚的这种方式，而使虚行为成为 MI 的准则呢：
 
