@@ -1140,3 +1140,107 @@ MI 使用方法：
     ```
 
 #### 14.3.1 有多少 Worker
+
+假设先从 Singer 和 Waiter 公有派生出 SingerWaiter：
+
+* ```C++
+  class SingerWaiter : public Singer, public Waiter {...};
+  ```
+
+  * 由于 Singer 和 Waiter 都继承了一个 Worker 组件，因此 SingerWorker 将包含两个 Worker 组件：
+
+    * ![image-20240110162904709](C:\Users\10482\AppData\Roaming\Typora\typora-user-images\image-20240110162904709.png)
+
+    * 引发问题：二义性
+
+      * ```c++
+        SingerWaiter ed;
+        Worker * pw = ed;	// ~ambiguous
+        ```
+
+      * 通常，这种赋值将把基类指针设置为派生对象中的基类对象的地址。但 ed 中包含两个 Worker 对象，有两个地址可供选择，所以应使用类型转换来指定对象：
+
+        * ```c++
+          Worker * pw1 = (Waiter *) &ed;
+          Worker * pw2 = (Singer *) &ed;
+          ```
+
+包含两个 Worker 对象拷贝还会导致其他的问题，这里引入新技术：虚基类，使 MI 成为可能：
+
+**1、虚基类：**
+
+* **虚基类**使得从**多个类**（它们的基类相同）派生出的对象**只继承一个基类对象**。
+
+  * 通过在类声明中使用关键字 Virtual 使**基类**被用作**多个类**的虚基类：
+
+    * ```c++
+      class Singer : virtual public Worker {...};
+      class Waiter : public virtual Worker {...};
+      ```
+
+  * 然后，将 SingerWorker 类定义为：
+
+    * ```C++
+      class SingerWaiter : public Singer, public Waiter {...};
+      ```
+
+  * 现在 SingerWaiter 对象只包含 Worker 对象的一个副本。两个对象共享一个 Worker 对象，而不是各自引入自己的 Worker 对象副本：
+
+    * ![image-20240110164621635](C:\Users\10482\AppData\Roaming\Typora\typora-user-images\image-20240110164621635.png)
+
+* 为什么不抛弃将基类声明为虚的这种方式，而使虚行为成为 MI 的准则呢：
+
+  * （1）在一些情况下，可能需要基类的多个拷贝；
+  * （2）将基类作为虚的要求程序完成额外的计算，为不需要的工具付出代价是不应当的；
+  * （3）有缺点，见下一段。
+
+**2、新的构造函数规则：**
+
+使用虚基类时，需要对类构造函数采用一种新的方法。对于非虚基类，唯一可以出现在初始化列表中的构造函数是**即时基类构造函数**。但这些构造函数可能需要将信息传递给其基类。例如，可能有下面一组构造函数：
+
+* ```c++
+  class A
+  {
+      int a;
+  public:
+      A(int n = 0) : a(n) {}
+      ...
+  };
+  
+  class B : public A
+  {
+      int b;
+  public:
+      B(int m = 0, int n = 0) : A(n), b(m) {}
+      ...
+  };
+  
+  class C : public B
+  {
+      int c;
+  public:
+      C(int q = 0, int m = 0, int n = 0) : B(m, n), c(q) {}
+      ...
+  };
+  ```
+
+  * C类构造函数只能调用B类构造函数，而B类构造函数只能调用A类构造函数；
+  * C类构造函数使用值q，并将值m, n传递给B类构造函数；B类构造函数使用值m, 并将n值传递给A类构造函数。
+
+* 如果 Worker 是虚基类，则这种信息自动传递将不起作用：
+
+  * ```c++
+    SingingWaiter(const Worker & wk, int p = 0, int v = Singer::other) : 	Waiter(wk, p), Singer(wk, v) {}	//flawed
+    ```
+
+*  如果不希望默认构造函数来构造虚基类对象，则需要显式地调用所需的基类构造函数。因此，构造函数应该是这样：
+
+  * ```c++
+    SingingWaiter(const Worker & wk, int p = 0; int v = Singer::other) : Worker(wk), Waiter(wk, p), Singer (wk, v) {}
+    ```
+
+    * 上述代码将显式地调用构造函数 worker (const Worker &)。请注意，这种用法是合法的，对于虚基类必须这样做；但对于非虚基类，则是非法的。
+
+  * 警告：如果类有间接虚基类，则除非只需使用该虚基类的默认构造函数，否则必须显式地调用该虚基类的某个构造函数。
+
+**14.3.2 哪个方法：
