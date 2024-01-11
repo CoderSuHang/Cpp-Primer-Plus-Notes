@@ -1245,4 +1245,32 @@ MI 使用方法：
 
 #### 14.3.2 哪个方法：
 
-DSA 	
+除了修改类构造函数规则外，MI通常还要求调整其他代码。
+
+假设要在 SingingWaiter 类中扩展 Show( ) 方法的问题：
+
+* 二义性：
+
+  * 对于单继承，如果没有重新定义 Show() ，则将使用最新祖先中的定义；
+
+  * 而在多重继承中，每个直接祖先都有一个 Show() 函数，使得上述调用是二义性。
+
+  * 可以用作用域解析运算符来澄清：
+
+    * ```c++
+      SingingWaiter newhire("Elise Hawks", 2005, 6, soprano);
+      newhire.Singer::Show();
+      ```
+
+* 更好的办法：
+
+  * 在 SingingWaiter 中重新定义 Show()，并指出要使用哪个 Show()：
+
+    * ```c++
+      void SingingWaiter::Show()
+      {
+          Singer::Show();
+      }
+      ```
+
+    * 
