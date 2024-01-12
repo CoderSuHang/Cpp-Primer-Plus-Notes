@@ -1243,7 +1243,7 @@ MI 使用方法：
 
   * 警告：如果类有间接虚基类，则除非只需使用该虚基类的默认构造函数，否则必须显式地调用该虚基类的某个构造函数。
 
-#### 14.3.2 哪个方法：
+#### 14.3.2 哪个方法
 
 除了修改类构造函数规则外，MI通常还要求调整其他代码。
 
@@ -1271,6 +1271,65 @@ MI 使用方法：
       {
           Singer::Show();
       }
+      ```
+
+    * 然而这种递增的方式对 SingingWaiter 示例无效，因为它忽略了 Waiter 组件；
+
+    * 可以通过同时调用 Waiter 版本的 Show() 来补救：
+
+      * ```c++
+        void SingingWaiter::Show()
+        {
+            Singer::Show();
+            Waiter::Show();
+        }
+        ```
+
+      * 这将显示姓名和ID两次，如何解决？
+
+        * 方法一：使用模块化方式，而不是递增方式，即提供一个只显示 Worker 组件的方法和一个只显示 Waiter 组件或 Singer 组件的方法。然后在 SingingWaiter::Show()  方法中将组件组合起来：
+
+          * ```c++
+            void Worker::Data() const
+            {
+                cout << "Name: " << fullname << "\n";
+                cout << "Employee ID: " << id << "\n";
+            }
+            
+            void Waiter::Data() const
+            {
+                cout << "Panache rating: " << panache << "\n";
+            }
+            
+            void Singer::Data() const
+            {
+                cout << "Vocal range: " << pv[voice] << "\n";
+            }
+            
+            void SingingWaiter::Data() const
+            {
+                Singer::Data();
+                Waiter::Data();
+            }
+            
+            void SingingWaiter::Show() const
+            {
+                cout << "Category: Singing waiter\n";
+                Worker::Data();
+                Data();
+            }
+            ```
+
+          * 采用这种方式，对象仍可使用 Show() 方法。而 Data() 方法只在类内部可用，作为协助公有接口的辅助方法。
+
+        * 方法二：将所有的数据组件都设置为保护的，而不是私有的，不过使用保护方法将可以更严格地控制对数据地访问。
+
+* 总之，在祖先相同时，使用 MI 必须引入虚基类，并修改构造函数初始化列表地规则。另外，如果在编写这些类时没有考虑到 MI，则还可能需要重新编写它们。
+
+  * 示例：
+
+    * ```c++
+      
       ```
 
     * 
