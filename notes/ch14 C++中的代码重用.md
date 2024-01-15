@@ -1868,3 +1868,118 @@ C++的类模板为生成通用的类声明提供了一种更好的方法，模�
       ```
 
 #### 14.4.2 使用模板类
+
+* 仅在程序包含模板并不能生成模板类，而必须请求实例化。为此需要声明一个类型为模板类的对象，方法是使用所需的具体类型替换泛型名。
+
+  * ```c++
+    Stack<int> kernels;		    // create a stack of ints
+    Stack<string> colonels;		// create a stack of string objects
+    ```
+
+  * 类声明 Stack<int> 将使用 int 替换模板中所有的 Type；string同理。
+
+* 反省标识符：Type（称为类型参数），这意味着它们类似于变量，但附给它们的不能是数字，而只能是类型。
+
+  * 注意❗必须显式地提供所需的类型，这与常规的函数模板是不同的，因为编译器可以根据函数的参数类型来确定要生成那种函数：
+
+    * ```c++
+      template <class T>
+      void simple(T t) { cout << t << "\n"; }
+      ...
+      simple(2);		// generate void simple(int)
+      simple(two);	// generate void simple(const char *)
+      ```
+
+* 示例（修改原来的栈测试程序ch11_12，使用字符串而不是 usigned long 值作为订单ID）
+
+  * ```C++
+    // ch14_14_stacktem.cpp -- testing the template stack class
+    #include <iostream>
+    #include <string>
+    #include <cctype>
+    #include "ch14_13_stacktp.h"
+    using std::cin;
+    using std::cout;
+    
+    int main()
+    {
+    	Stack<std::string> st;		// create an empty stack
+    	char ch;
+    	std::string po;
+    	cout << "Please enter A to add a purchase order,\n"
+    		<< "P to process a PO, or Q to quit.\n";
+    	while (cin >> ch && std::toupper(ch) != 'Q')
+    	{
+    		while (cin.get() != '\n')
+    			continue;
+    		if (!std::isalpha(ch))
+    		{
+    			cout << "\a";
+    			continue;
+    		}
+    		switch (ch)
+    		{
+    			case 'A':
+    			case 'a': cout << "Enter a PO number to add: ";
+    					  cin >> po;
+    					  if (st.isfull())
+    						  cout << "Stack already full\n";
+    					  else
+    						  st.push(po);
+    					  break;
+    			case 'P':
+    			case 'p': if (st.isempty())
+    						  cout << "Stack already empty\n";
+    					  else
+    					  {
+    					   	  st.pop(po);
+    						  cout << "PO #" << po << "popped\n";
+    						  break;
+    					  }
+    		}
+    		cout << "Please enter A to add a purchase order,\n"
+    			 << "P to process a PO, or Q to quit.\n";
+    	}
+    	cout << "Bye\n";
+    	return 0;
+    }
+    ```
+
+* 结果：
+
+  * ```c++
+    Please enter A to add a purchase order,
+    P to process a PO, or Q to quit.
+    A
+    Enter a PO number to add: red911porsche
+    Please enter A to add a purchase order,
+    P to process a PO, or Q to quit.
+    A
+    Enter a PO number to add: blueR8audi
+    Please enter A to add a purchase order,
+    P to process a PO, or Q to quit.
+    A
+    Enter a PO number to add: silver747boeing
+    Please enter A to add a purchase order,
+    P to process a PO, or Q to quit.
+    P
+    PO #silver747boeingpopped
+    Please enter A to add a purchase order,
+    P to process a PO, or Q to quit.
+    P
+    PO #blueR8audipopped
+    Please enter A to add a purchase order,
+    P to process a PO, or Q to quit.
+    P
+    PO #red911porschepopped
+    Please enter A to add a purchase order,
+    P to process a PO, or Q to quit.
+    p
+    Stack already empty
+    Please enter A to add a purchase order,
+    P to process a PO, or Q to quit.
+    Q
+    Bye
+    ```
+
+#### 14.4.3 深入探讨模板类
