@@ -1983,3 +1983,241 @@ C++的类模板为生成通用的类声明提供了一种更好的方法，模�
     ```
 
 #### 14.4.3 深入探讨模板类
+
+可以将内置类型或类对象用作类模板 Class<Type> 的类型，也可以创建指针栈，但如果不对程序做重大修改，将无法很好地工作：
+
+**1、不正确地使用指针栈**
+
+3个试图对程序清单CH14_14进行修改，使之使用指针栈的示例（有缺陷），这3个示例都以完全正确的 Stack<Type> 模板为基础：
+
+```c++
+Stack<char *> st;	// create a stack for pointers-to-char
+```
+
+* 版本1：
+
+  * ```c++
+    //将程序清单中的：
+    string po;
+    //替换为：
+    char * po;
+    ```
+
+  * 用 char 指针而不是 string 对象来接受键盘输入。
+
+  * 失败❗因为仅仅创建指针，没有创建用于保存输入字符串的空间。
+
+* 版本2：
+
+  * ```c++
+    //将程序清单中的：
+    string po;
+    //替换为：
+    char po[40];
+    ```
+
+  * 这为输入的字符串分配了空间。另外，po 的类型为 char*，因此可以被放在栈中。
+
+  * 但数组完全与 pop() 方法的假设相冲突：
+
+    * ```c++
+      template <class Type>
+      bool Stack<Type>::pop(Type& item)
+      {
+      	if (top > 0)
+      	{
+      		item = items[--top];
+      		return true;
+      	}
+      	else
+      		return false;
+      }
+      ```
+
+    * 首先，引用变量 item 必须引用某种类型的左值，而不是数组名。
+
+    * 其次，代码假设可以给 item 赋值。即使 item 能够引用数组，也不能为数组名赋值，因此这种方法失败❗
+
+* 版本3：
+
+  * ```c++
+    //将程序清单中的：
+    string po;
+    //替换为：
+    char * po = new char[40];
+    ```
+
+  * 这为输入的字符串分配了空间。另外，po 是变量，因此与 pop()的代码兼容。
+
+  * 然而，这将会遇到最基本的问题：
+
+    * 只有一个 pop 变量，该变量总是指向相同的内存单元。确实，在每当读取新字符串时，内存的内容都将发生改变，但每次执行压入操作时，加入到栈中的的地址都相同。因此，对栈执行弹出操作时，得到的地址总是相同的，它总是指向读入的最后一个字符串。具体地说，栈并没有保存每一个新字符串，因此没有任何用途。
+
+**2、正确使用指针栈**
+
+* 让调用程序提供一个指针数组，其中每个指针都指向不同的字符串。
+
+  * 注意❗创建不同指针是调用程序的职责，而不是栈的职责。栈的任务是管理指针，而不是创建指针。
+
+* 案例模拟：（用一个指针数组模拟文件收发，见P573）
+
+  * ```C++
+    #pragma once
+    // ch14_15_stcktp1.h -- modified Stack template
+    #ifndef CH14_15_STCKTP1_H_
+    #define CH14_15_STCKTP1_H_
+    
+    template <class Type>
+    class Stack
+    {
+    private:
+    	enum {SIZE = 10};
+    	int stacksize;
+    	Type* items;		// holds stack items
+    	int top;			// index for top stack item
+    public:
+    	explicit Stack(int ss = SIZE);
+    	Stack(const Stack& st);
+    	~Stack() { delete[] items; }
+    	bool isempty() { return top == 0; }
+    	bool isfull() { return top == stacksize; }
+    	bool push(const Type& item);
+    	bool pop(Type& item);
+    	Stack& operator=(const Stack& st);
+    };
+    
+    template<class Type>
+    Stack<Type>::Stack(int ss) : stacksize(ss), top(0)
+    {
+    	items = new Type[stacksize];
+    }
+    
+    template<class Type>
+    Stack<Type>::Stack(const Stack& st)
+    {
+    	stacksize = st.stacksize;
+    	top = st.top;
+    	items = new Type[stacksize];
+    	for (int i = 0; i < top; i++)
+    		items[i] = st.items[i];
+    }
+    
+    template<class Type>
+    bool Stack<Type>::push(const Type& item)
+    {
+    	if (top < stacksize)
+    	{
+    		items[top++] = item;
+    		return true;
+    	}
+    	else
+    		return false;
+    }
+    
+    template<class Type>
+    bool Stack<Type>::pop(Type & item)
+    {
+    	if (top > 0)
+    	{
+    		item = items[--top];
+    		return true;
+    	}
+    	else
+    		return false;
+    }
+    
+    template<class Type>
+    Stack<Type> & Stack<Type>::operator=(const Stack<Type> & st)
+    {
+    	if (this == &st)
+    		return *this;
+    	delete[] items;
+    	stacksize = st.stacksize;
+    	top = st.top;
+    	items = new Type[stacksize];
+    	for (int i = 0; i < top; i++)
+    		items[i] = st.items[i];
+    	return *this;
+    }
+    
+    #endif
+    ```
+
+  * ```c++
+    // ch14_16_stkoptr1.cpp -- testing stack of pointers
+    #include <iostream>
+    #include <cstdlib>
+    #include <ctime>
+    #include "ch14_15_stcktp1.h"
+    const int Num = 10;
+    int main()
+    {
+    	std::srand(std::time(0));
+    	std::cout << "Please enter stack size: ";
+    	int stacksize;
+    	std::cin >> stacksize;
+    // create an empty stack with stacksize slots
+    	Stack<const char*> st(stacksize);
+    // in basket
+    	const char* in[Num] = {
+    		" 1: Hank Gilgamesh", " 2: Kiki Ishtar",
+    		" 3: Betty Rocker", " 4: Ian Flagranti",
+    		" 5: Wolfgang Kibble", " 6: Portia Koop",
+    		" 7: Joy Almondo", " 8: Xaverie Paprika",
+    		" 9: Juan Moore", " 10: Misha Mache",
+    	};
+    // out basket
+    	const char* out[Num];
+    
+    	int processed = 0;
+    	int nextin = 0;
+    	while (processed < Num)
+    	{
+    		if (st.isempty())
+    			st.push(in[nextin++]);
+    		else if (st.isfull())
+    			st.pop(out[processed++]);
+    		else if (std::rand() % 2 && nextin < Num)	// 50-50 chance
+    			st.push(in[nextin++]);
+    		else
+    			st.pop(out[processed++]);
+    	}
+    	for (int i = 0; i < Num; i++)
+    		std::cout << out[i] << std::endl;
+    
+    	std::cout << "Bye\n";
+    	return 0;
+    }
+    ```
+
+* 结果：
+
+  * ```c++
+    Please enter stack size: 5
+     2: Kiki Ishtar
+     1: Hank Gilgamesh
+     3: Betty Rocker
+     7: Joy Almondo
+     8: Xaverie Paprika
+     10: Misha Mache
+     9: Juan Moore
+     6: Portia Koop
+     5: Wolfgang Kibble
+     4: Ian Flagranti
+    Bye
+         
+    Please enter stack size: 5
+     4: Ian Flagranti
+     6: Portia Koop
+     5: Wolfgang Kibble
+     8: Xaverie Paprika
+     7: Joy Almondo
+     3: Betty Rocker
+     9: Juan Moore
+     2: Kiki Ishtar
+     1: Hank Gilgamesh
+     10: Misha Mache
+    Bye
+    ```
+
+#### 14.4.4 数组模板示例和非类型参数
