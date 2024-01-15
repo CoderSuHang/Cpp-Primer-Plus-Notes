@@ -1749,3 +1749,122 @@ C++的类模板为生成通用的类声明提供了一种更好的方法，模�
 * 例如，将类型名 int 传递 Queue 模板，可以让编译器构造一个对 int 进行排队的 Queue 类。
 
 #### 14.4.1 定义类模板
+
+* 采用模板时，将使用模板定义替换类声明，使用模板成员函数替换类的成员函数。和模板函数一样，模板类以下面这样的代码开头：
+
+  * ```c++
+    template <class Type>
+    ```
+
+    * 尖括号中的内容相当于函数的参数列表。
+
+    * 可以把关键字 class 看作是变量的类型名，该变量接受类型作为其值，把 Type 看作该变量的名称。
+
+      * 这里使用 class 并不意味着 Type 必须是一个类；而只是表明 Type 是一个通用的类型说明符，在使用模板时，将使用实际的类型替换它。
+
+      * ```c++
+        template <typename Type>		// newer choice
+        ```
+
+      * 可以使用自己的泛型名代替 Type ，其命名规则与其他标识符相同。
+
+  * 在模板定义中，可以使用泛型名称来标识要储存在栈中的类型，即将声明中所有的 typedef 标识符 Item 替换为 Type：
+
+    * ```C++
+      Item items[Max];
+      // 应改为：
+      Type items[max];
+      ```
+
+* 可以使用模板成员函数替换原有类的类方法。每个函数头都将以相同的模板声明打头：
+
+  * ```c++
+    template <class Type>
+    ```
+
+  * 同样应使用泛型名 Type 替换 typedef 标识符 Item。另外还需将类限定符从 Stack::改为 Stack<Type>::。
+
+    * ```c++
+      bool Stack::push(const ITEM & item)
+      {
+          ...
+      }
+      // 应该为：
+      template <class Type>
+      bool Stack<Type>::push(const Type & item)
+      {
+          ...
+      }
+      ```
+
+* 不能将模板成员函数放在独立的实现文件中。由于模板不是函数，它们不能单独编译。模板必须与特定的模板实例化请求一起使用。
+
+  * 为此最简单的方法是将所有模板信息放在一个头文件中，并在要使用这些模板文件中包含该头文件
+
+  * 示例：
+
+    * ```c++
+      #pragma once
+      // ch14_13_stacktp.h -- a stack template
+      #ifndef CH14_13_STACKTP_H_
+      #define CH14_13_STACKTP_H_
+      template <class Type>
+      class Stack
+      {
+      private:
+      	enum {MAX = 10};
+      	Type items[MAX];
+      	int top;
+      public:
+      	Stack();
+      	bool isempty();
+      	bool isfull();
+      	bool push(const Type& item);
+      	bool pop(Type& item);
+      };
+      
+      template <class Type>
+      Stack<Type>::Stack()
+      {
+      	top = 0;
+      }
+      
+      template <class Type>
+      bool Stack<Type>::isempty()
+      {
+      	return top == 0;
+      }
+      
+      template <class Type>
+      bool Stack<Type>::isfull()
+      {
+      	return top == MAX;
+      }
+      
+      template <class Type>
+      bool Stack<Type>::push(const Type& item)
+      {
+      	if (top < MAX)
+      	{
+      		items[top++] = item;
+      		return true;
+      	}
+      	else
+      		return false;
+      }
+      
+      template <class Type>
+      bool Stack<Type>::pop(Type& item)
+      {
+      	if (top > 0)
+      	{
+      		item = items[--top];
+      		return true;
+      	}
+      	else
+      		return false;
+      }
+      #endif
+      ```
+
+#### 14.4.2 使用模板类
