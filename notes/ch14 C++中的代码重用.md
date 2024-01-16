@@ -2221,3 +2221,106 @@ Stack<char *> st;	// create a stack for pointers-to-char
     ```
 
 #### 14.4.4 数组模板示例和非类型参数
+
+模板常用作容器类，这是因为类型参数的概念非常适合于将相同的存储方案用于不同的类型。
+
+下面将探讨一些非类型（或表达式）参数以及如何使用数组来处理继承族：
+
+* 一个允许指定数组大小的简单数组模板：
+
+  * 一种方法是在类中使用动态数组和构造函数参数来提供元素数目，最后一个版本的 Stack 模板采用的就是这种方法。
+  * 另一种方法是使用模板参数来提供常规数组的大小，C++11 新增的模板 array 就是这样做的。程序清单 14.17 演示了如何做。
+
+* 示例：
+
+  * ```c++
+    #pragma once
+    // ch14_17_arraytp.h -- Array Template
+    #ifndef CH14_17_ARRAYTP_H_
+    #define CH14_17_ARRAYTP_H_
+    
+    #include <iostream>
+    #include <cstdlib>
+    
+    template <class T, int n>
+    class ArrayTP
+    {
+    private:
+    	T ar[n];
+    public:
+    	ArrayTP() {};
+    	explicit ArrayTP(const T& v);
+    	virtual T& operator[](int i);
+    	virtual T operator[](int i) const;
+    };
+    
+    template <class T, int n>
+    ArrayTP<T, n>::ArrayTP(const T& v)
+    {
+    	for (int i = 0; i < n; i++)
+    		ar[i] = v;
+    }
+    
+    template <class T, int n>
+    T& ArrayTP<T, n>::operator[](int i)
+    {
+    	if (i < 0 || i >= n)
+    	{
+    		std::cerr << "Error in array limits: " << i
+    			<< " is out of range\n";
+    		std::exit(EXIT_FAILURE);
+    	}
+    	return ar[i];
+    }
+    
+    template <class T, int n>
+    T ArrayTP<T, n>::operator[](int i) const
+    {
+    	if (i < 0 || i >= n)
+    	{
+    		std::cerr << "Error in array limits: " << i
+    			<< " is out of range\n";
+    	}
+    	return ar[i];
+    }
+    
+    #endif
+    ```
+
+    * 关键字：
+
+      * class（或在这种上下文中等价的关键字 typename）指出T为类型参数；
+      * int 指出 n 的类型为int。
+      * 这种参数（指定特殊的类型而不是用作型名）称为非类（non-type）或达式 （expression）参数。
+
+    * 表达式参数限制：
+
+      * 表达式参数可以是整型、枚举、引用或指针。其他非法；
+      * 模板代码不能修改参数的值，也不能使用参数的地址；
+      * 实例化模板时，用作表达式参数的值必须是常量表达式。
+
+    * 优缺点：
+
+      * 优点：
+
+        * 与 Stack 中使用的构造函数方法相比，这种改变数组大小的方法有一个优点。构造函数方法使用的是通过 new 和 delete 管理的堆内存，而表达式参数方法使用的是为自动变量维护的内存栈。这样，执行速度将更快，尤其是在使用了很多小型数组时。
+
+      * 缺点：
+
+        * 每种数组大小都将生成自己的模板。也就是说，下面的声明将生成两个独立的类声明：
+
+          * ```c++
+            Array<double, 12> eggweights;
+            Array<double, 13> donuts;
+            ```
+
+          * 但下面的声明只生成一个类声明，并将数组大小信息传递给类的构造函数：
+
+            * ```c++
+              Stack<int> eggs(12);
+              Stack<int> dunkers(13);
+              ```
+
+        * 另一个区别是，构造函数方法更通用，这是因为数组大小是作为类成员(而不是硬编码)存储在定义中的。这样可以将一种尺寸的数组赋给另一种尺寸的数组，也可以创建允许数组大小可变的类。
+
+#### 14.4.5 模板多功能性
