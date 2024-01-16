@@ -1,5 +1,5 @@
 // ch14_18_twod.cpp  -- making a 2-d array
-/*#include <iostream>
+#include <iostream>
 #include "ch14_17_arraytp.h"
 
 int main(void)
@@ -38,4 +38,4 @@ int main(void)
 	cout << "Done.\n";
 
 	return 0;
-}*/
+}
