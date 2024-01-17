@@ -2961,3 +2961,112 @@ Stack<char *> st;	// create a stack for pointers-to-char
       * 定义还必须指出 hold 和 blab 是 beta<T>类的成员，这是通过使用作用域解析运算符来完成的。
 
 #### 14.4.8 将模板用作参数
+
+模板可以包含类型参数 (如 typename T) 和非类型参数 (如int n) 。板还可以包含本身就是模板的参数：
+
+* ```c++
+  template <template <teamplate T> class Thing>
+  class Crab
+  ```
+
+  * 模板参数是：
+
+    * ```c++
+      template <teamplate T> class Thing
+      ```
+
+      * 类型是：
+
+        * ```c++
+          template <teamplate T> class
+          ```
+
+      * 参数是：
+
+        * ```c++
+          Thing
+          ```
+
+* 示例：
+
+  * ```c++
+    // ch14_21_tempparm.cpp -- templates as parameters
+    #include <iostream>
+    #include "ch14_13_stacktp.h"
+    
+    template <template <typename T> class Thing>
+    class Crab
+    {
+    private:
+    	Thing<int> s1;
+    	Thing<double> s2;
+    public:
+    	Crab() {};
+    	// assumes the thing class has push() and pop() members
+    	bool push(int a, double x) { return s1.push(a) && s2.push(x); }
+    	bool pop(int& a, double& x) { return s1.pop(a) && s2.pop(x); }
+    };
+    
+    int main()
+    {
+    	using std::cout;
+    	using std::cin;
+    	using std::endl;
+    	Crab<Stack> nebula;
+    // Stack must match template <typename T> class thing
+    	int ni;
+    	double nb;
+    	cout << "Enter int double pairs, such as 4 3.5 (0 0 to end):\n";
+    	while (cin >> ni >> nb && ni > 0 && nb > 0)
+    	{
+    		if (!nebula.push(ni, nb))
+    			break;
+    	}
+    
+    	while (nebula.pop(ni, nb))
+    		cout << ni << ", " << nb << endl;
+    	cout << "Done.\n";
+    
+    	return 0;
+    }
+    ```
+
+* 结果：
+
+  * ```c++
+    Enter int double pairs, such as 4 3.5 (0 0 to end):
+    50 22.48
+    25 33.87
+    60 19.12
+    0 0
+    60, 19.12
+    25, 33.87
+    50, 22.48
+    Done.
+    ```
+
+* 可以混合使用模板参数和常规参数，例如，Crab 类的声明可以像下面这样打头：
+
+  * ```c++
+    template <template <typename T> class Thing, typename U, typename V>
+    class Crab
+    {
+    private:
+    	Thing<u> s1;
+    	Thing<v> s2;
+    public:
+    	...
+    };
+    ```
+
+  * 现在，成员s1和s2存储的数据型为泛型，而不是用硬编码指定的类型。
+
+  * 这要求程序中的nebula的声明修改为：
+
+    * ```c++
+      Crab<Stack, int, double> nebula;	// T=Stack, U=int, V=double
+      ```
+
+    * 模板参数T表示一种模板类型，而类型参数U和V表示非模板类型。
+
+#### 14.4.9 模板类和友元
