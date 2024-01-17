@@ -2523,4 +2523,330 @@ Stack<char *> st;	// create a stack for pointers-to-char
 
 * 虽然可以为类模板类型参数提供默认值，但不能为函数模板参数提供默认值。然而，可以为非类型参数提供默认值，这对于类模板和函数模板都是适用的。
 
+#### 14.4.5 模板多功能性
+
+可以将用于常规类的技术用于模板类。模板类可用作基类，也可用作组件类，还可用作其他模板的类型参数：
+
+* 可以使用数组模板实现栈模板，也可以使用数组模板来构造数组——数组元素是基于栈模板的栈。
+
+  * ```c++
+    template <typename T>
+    class Array
+    {
+    private:
+        T entry;
+        ...
+    };
+    
+    template <typename Type>
+    class GrowArray : public Array<Type> {...};	// inheritance
+    
+    template <typename Tp>
+    class Stack
+    {
+        Array<Tp> ar;			// use an Array<> as a component	
+        ...
+    };
+    ...
+    Array < Stack<int> > asi;	// an array of stacks of int
+    ```
+
+**1、递归使用模板**
+
+* 可以递归使用模板：
+
+  * 对于前面的数组模板定义，可以这样使用：
+
+    * ```c++
+      ArrayTP< ArrayTP<int, 5>, 10> twodee;
+      ```
+
+    * 这使得 twodee 是一个包含10个元素的数组，其中每个元素都是一个包含5个int元素的数组。等价于：
+
+      * ```c++
+        int twodee[10] [5];
+        ```
+
+      * 请注意，在模板语法中，维的顺序与等价的二维数组相反。
+
+  * 示例：
+
+    * ```c++
+      // ch14_18_twod.cpp  -- making a 2-d array
+      #include <iostream>
+      #include "ch14_17_arraytp.h"
+      
+      int main(void)
+      {
+      	using std::cout;
+      	using std::endl;
+      	ArrayTP<int, 10> sums;
+      	ArrayTP<double, 10> aves;
+      	ArrayTP< ArrayTP<int, 5>, 10> twodee;
+      	
+      	int i, j;
+      	for (i = 0; i < 10; i++)
+      	{
+      		
+      		sums[i] = 0;
+      		for (j = 0; j < 5; j++)
+      		{
+      			twodee[i][j] = (i + 1) * (j + 1);
+      			sums[i] += twodee[i][j];
+      		}
+      		aves[i] = (double)sums[i] / 10;
+      	}
+      
+      	for (i = 0; i < 10; i++)
+      	{
+      		for (j = 0; j < 5; j++)
+      		{
+      			cout.width(2);
+      			cout << twodee[i][j] << ' ';
+      		}
+      		cout << ": sum = ";
+      		cout.width(3);
+      		cout << sums[i] << ", average = " << aves[i] << endl;
+      	}
+      
+      	cout << "Done.\n";
+      
+      	return 0;
+      }
+      ```
+
+  * 结果：
+
+    * ```c++
+      1  2  3  4  5 : sum =  15, average = 1.5
+      2  4  6  8 10 : sum =  30, average = 3
+      3  6  9 12 15 : sum =  45, average = 4.5
+      4  8 12 16 20 : sum =  60, average = 6
+      5 10 15 20 25 : sum =  75, average = 7.5
+      6 12 18 24 30 : sum =  90, average = 9
+      7 14 21 28 35 : sum = 105, average = 10.5
+      8 16 24 32 40 : sum = 120, average = 12
+      9 18 27 36 45 : sum = 135, average = 13.5
+      10 20 30 40 50 : sum = 150, average = 15
+      ```
+
+  **2、使用多个类型参数**
+
+模板可以包含多个类型参数。
+
+* 例如，假设希望类可以保存两种值，则可以创建并使用 Pair 模板来保存两个不同的值：
+
+  * ```C++
+    // ch14_19_pairs.cpp -- defining and using a Pair template
+    #include <iostream>
+    #include <string>
+    
+    template <class T1, class T2>
+    class Pair
+    {
+    private:
+    	T1 a;
+    	T2 b;
+    public:
+    	T1& first();
+    	T2& second();
+    	T1 first() const { return a; }
+    	T2 second() const { return b; }
+    	Pair(const T1 & aval, const T2 & bval) : a(aval), b(bval) { }
+    	Pair() {}
+    };
+    
+    template<class T1, class T2>
+    T1& Pair<T1, T2>::first()
+    {
+    	return a;
+    }
+    
+    template<class T1, class T2>
+    T2& Pair<T1, T2>::second()
+    {
+    	return b;
+    }
+    
+    int main()
+    {
+    	using std::cout;
+    	using std::endl;
+    	using std::string;
+    	Pair<string, int> ratings[4] =
+    	{
+    		Pair<string, int>("The Purpled Duck", 5),
+    		Pair<string, int>("Jaquie's Frisco Al Fresco", 4),
+    		Pair<string, int>("Cafe souffle", 5),
+    		Pair<string, int>("Bertie's Eats", 3)
+    	};
+    
+    	int joints = sizeof(ratings) / sizeof(Pair<string, int>);
+    	cout << "Rating:\t Eatery\n";
+    	for (int i = 0; i < joints; i++)
+    		cout << ratings[i].second() << ":\t"
+    			 << ratings[i].first() << endl;
+    	cout << "0ops! Revised rating:\n";
+    	ratings[3].first() = "Bertie's Fab Eats";
+    	ratings[3].second() = 6;
+    	cout << ratings[3].second() << ":\t"
+    		 << ratings[3].first() << endl;
+    	return 0;
+    }
+    ```
+
+  * ```c++
+    Rating:  Eatery
+    5:      The Purpled Duck
+    4:      Jaquie's Frisco Al Fresco
+    5:      Cafe souffle
+    3:      Bertie's Eats
+    0ops! Revised rating:
+    6:      Bertie's Fab Eats
+    ```
+
+**3、默认类型模板参数**
+
+类模板的另一项新特性是，可以为类型参数提供默认值：
+
+* ```c++
+  template <class T1, class T2 = int> class Topo {...};
+  ```
+
+  * 这样，如果省略 T2 的值，编译器将使用 int：
+
+    * ```c++
+      Topo<double, double> m1; // T1 is double, T2 is double
+      Topo<double> m2;		// T1 is double, T2 is int
+      ```
+
+* 虽然可以为类模板类型参数提供默认值，但不能为函数模板参数提供默认值。然而，可以为非类型参数提供默认值，这对于类模板和函数模板都是适用的。
+
 #### 14.4.6 模板的具体化
+
+模板具体化：隐式实例化、显式实例化和显式具体化。模板以泛型的方式描述类，而具体化是使用具体的类型生成类声明。
+
+**1、隐式实例化**
+
+* 目前笔记中所有的模板示例使用的都是隐式实例化：即它们声明一个或多个对象，指出所需的类型，而编译器使用通用模板提供的处方生成具体的定义：
+
+  * ```c++
+    ArrayTP<int, 100> stuff;	// implicit instantiation
+    ```
+
+* 编译器在需要对象之前，不会生成类的隐式实例化：
+
+  * ```c++
+    ArrayTP<double, 30> * pt;	// a pointer, no object needed yet
+    pt = new ArrayTP<double, 30>;// now an object is needed
+    ```
+
+**2、显式实例化**
+
+* 当使用关键字 template 并指出所需类型来声明类时，编译器将生成类声明的显式实例化。
+
+  * 声明必须位于模板定义所在的名称空间中：
+
+    * ```c++
+      template class ArrayTP<string, 100>;	// generate ArrayTP<string, 100> class
+      ```
+
+    * 在这种情况下，虽然没有创建或提及类对象，编译器也将生成类声明(包括方法定义)。和隐式实例化样，也将根据通用模板来生成具体化。
+
+**3、显式具体化**
+
+* 显式具体化是特定类型（用于替换模板中的泛型）的定义。
+
+  * 如果需要在为特殊类型实例化时，对模板进行修改，使其行为不同时，可以创建显式具体化：
+
+    * 例如假设已经为用于表示排序后数组的类（元素在加入时被排序）定义了一个模板：
+
+      * ```c++
+        template <typename T>
+        class SortedArray
+        {
+            ...// detials omitted
+        };
+        ```
+
+    * 假设模板使用>运算符来对值进行比较，如果T是由 从 const char * 表示字符串，这将不管用。
+
+      * 字符串将按地址排序。因此要求类定义使用 strcmp() ，而不是 > 来对值进行比较。
+
+      * 这时，可以提供一个显式模板具体化，这将采用为具体类型定义的模板，而不是为泛型定义的模板。
+
+      * 当具体化模板和通用模板都与实例化请求匹配时，编译器将使用具体化版本:
+
+        * ```c++
+          templace <> class Classname<specialized-type-name> {...};
+          ```
+
+        * 要使用新的表示方法提供一个专攻 const char * 类型使用的 SortedArray 模板，可以使用类似于下面的代码：
+
+          * ```c++
+            template <> class SortedArray<const char char *>
+            {
+                ...	// detials omitted
+            };
+            ```
+
+          * 其中的实现代码将使用 strcmp() (而不是>) 来比较数组值现在当请求 const char *类型的 SortedArray 模板时，编译器将使用上述专用的定义，而不是通用的模板定义：
+
+            * ```c++
+              SortedArray<int> scores;	// use general definition
+              SortedArray<const char * > dates;	// use specialized definition
+              ```
+
+**4、部分具体化**
+
+部分具体化即部分限制模板的通用性。
+
+* 部分具体化可以给类型参数之一指定具体的类型：
+
+  * ```c++
+    // general template
+    template <class T1, class T2> class Pair {...};
+    // specialization with T2 set to int
+    template <class T1> class Pair<T1, int> {...};
+    ```
+
+    * 关键字 template 后面的 <> 声明的是没有被具体化的类型参数。
+
+    * 因此，第二个声明将 T2 具体化为 int，但  T1 保持不变。
+
+    * 如果指定所有的类型，则 <> 内将为空，这将导致显式具体化：
+
+      * ```c++
+        // specialization with T1 and T2 set to int
+        template <> class Pair<int, int> {...};
+        ```
+
+* 如果有多个模板可供选择，编译器将使用具体化程度最高的模板。给定上述三个模板，情况如下：
+
+  * ```c++
+    Pair<double, double> p1;	// use general Pair template
+    Pair<double, int> p2;		// use Pair<T1, int> partial specialization
+    Pair<int, int> p3;			// use Pair<int, int> explicit specialization
+    ```
+
+* 也可以通过为指针提供特殊版本来部分具体化现有的模板：
+
+  * ```c++
+    template<class T>	// general version
+    class Feeb {...};
+    template<class T*>	// pointer partial specialization
+    class Feeb {...};	// modified code
+    ```
+
+  * 如果提供的类型不是指针，则编译器将使用通用版本；
+
+  * 如果提供的是指针，则编译器将使用指针具体化版本：
+
+    * ```c++
+      Feeb<char> fb1;		// use genetal Feeb template, T is char
+      Feeb<char *> fb2;	// use Feeb T* specialization, T is char
+      ```
+
+    * 其他见P583
+
+**14.4.7 成员模板**
