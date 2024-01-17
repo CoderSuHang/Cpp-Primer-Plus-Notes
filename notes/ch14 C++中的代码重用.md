@@ -2849,4 +2849,115 @@ Stack<char *> st;	// create a stack for pointers-to-char
 
     * 其他见P583
 
-**14.4.7 成员模板**
+#### 14.4.7 成员模板
+
+模板可用作结构、类或模板类的成员。要完全实现 STL 的设计，必须使用这项特性。
+
+* 示例：
+
+  * ```c++
+    // ch14_20_tempmemb.cpp -- template members
+    #include <iostream>
+    
+    using std::cout;
+    using std::endl;
+    template <typename T>
+    class beta
+    {
+    private:
+    	template <typename V>	// nested template class member
+    	class hold
+    	{
+    	private:
+    		V val;
+    	public:
+    		hold(V v = 0) : val(v) {}
+    		void show() const { cout << val << endl; }
+    		V Value() const { return val; }
+    	};
+    	hold<T> q;		// q成员是基于T类型（beta模板参数）的hold对象
+    	hold<int> n;	// n是基于int类型的hold对象
+    public:
+    	beta(T t, int i) : q(t), n(i) {}
+    	template<typename U>	// template method
+    	U blab(U u, T t) { return (n.Value() + q.Value()) * u / t; }
+    	void Show() const { q.show(); n.show(); }
+    };
+    
+    int main()
+    {
+    	beta<double> guy(3.5, 3);
+    	cout << "T was set to double\n";
+    	guy.Show();
+    	cout << "V was set to T, which is double, then V was set to int\n";
+    	cout << guy.blab(10, 2.3) << endl;
+    	cout << "U was set to int\n";
+    	cout << guy.blab(10.0, 2.3) << endl;
+    	cout << "U was set to double\n";
+    	cout << "Done\n";
+    	return 0;
+    }
+    ```
+
+    * hold 模板是在私有部分声明的，因此只能在 beta 类中访问它。在 main() 中，下述声明使得 T 表示的是 double：
+
+      * ```C++
+        beta<double> guy(3.5, 3);
+        ```
+
+    * blab() 方法的 U 类型由该方法被调用时的参数值显式确定，T类型由对象的实例化类型确定。
+
+    * 可以在beta模板中声明 hold 类和 blah 方法，并在 beta 模板的外面定义它：
+
+      * ```c++
+        template <typename T>
+        class beta
+        {
+        private:
+        	template <typename V>
+        	class hold；
+        	hold<T> q;
+        	hold<int> n;
+        public:
+        	beta(T t, int i) : q(t), n(i) {}
+        	template<typename U>
+        	U blab(U u, T t);
+        	void Show() const { q.show(); n.show(); }
+        };
+        
+        template <typename T>
+        	template <typename V>
+        		class beta<T>::hold
+                {
+                    private:
+        				V val;
+        			public:
+        				hold(V v = 0) : val(v) {}
+        				void show() const { cout << val << endl; }
+        				V Value() const { return val; }
+                };
+        
+        template <typename T>
+        	template <typename U>
+        		U beta<T>::blab(U u, T t)
+        		{
+            		return (n.Value() + q.Value()) * u / t;
+        		}
+        ```
+
+      * 因为模板是嵌套的，所以必须使用下面语法：
+
+        * ```c++
+          template <typename T>
+          	template <typename V>
+          ```
+
+        * 不能：
+
+          * ```c++
+            template <typename T, template V>
+            ```
+
+      * 定义还必须指出 hold 和 blab 是 beta<T>类的成员，这是通过使用作用域解析运算符来完成的。
+
+#### 14.4.8 将模板用作参数
