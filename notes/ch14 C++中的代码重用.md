@@ -3069,4 +3069,116 @@ Stack<char *> st;	// create a stack for pointers-to-char
 
     * 模板参数T表示一种模板类型，而类型参数U和V表示非模板类型。
 
-#### 14.4.9 模板类和友元
+**2、模板类的约束模板友元函数**
+
+使友元函数本身称为模板时，即为约束模板友元作准备，要使类的每一个具体化都获得与友元匹配的具体化，主要有3步骤：
+
+* 首先，在类定义的前面声明每个模板函数：
+
+  * ```c++
+    template <typename T> void counts();
+    template <typename T> void report(T &);
+    ```
+
+* 然后，在函数中再次将模板声明为友元，这些语句根据类模板参数的类型声明具体化：
+
+  * ```C++
+    template <typename TT>
+    class HasFriendT
+    {
+    ...
+        friend void counts<TT>();
+        friend void report<>(HasFriendT<TT> &);
+        ...
+    };
+    ```
+
+    * 声明中的<>指出这是模板具体化，对于report() 来说<>可以为空，因为可以从函数参数推断出如下模板类型参数：
+
+      * ```c++
+        HasFriendT<TT>
+        ```
+
+      * 然而也可以：
+
+        * ```c++
+          friend void report<TT>(HasFriendT<TT> &);
+          ```
+
+    * 但 counts() 函数没有参数，因此必须使用模板参数语法(<TT>)来指明其具体化。
+
+* 示例：
+
+  * ```c++
+    // ch14_23_tmp2tmp.cpp -- template friends to a template class
+    #include <iostream>
+    using std::cout;
+    using std::endl;
+    
+    // template prototypes
+    template <typename T> void counts();
+    template <typename T> void report(T&);
+    
+    // template class
+    template <typename TT>
+    class HasFriendT
+    {
+    private:
+    	TT item;
+    	static int ct;
+    public:
+    	HasFriendT(const TT& i) : item(i) { ct++; }
+    	~HasFriendT() { ct--; }
+    	friend void counts<TT>();
+    	friend void report<>(HasFriendT<TT>&);
+    };
+    
+    template <typename T>
+    int HasFriendT<T>::ct = 0;
+    
+    // temolate friend functions definitions
+    template <typename T>
+    void counts()
+    {
+    	cout << "template size: " << sizeof(HasFriendT<T>) << "; ";
+    	cout << "template counts(): " << HasFriendT<T>::ct << endl;
+    }
+    
+    template <typename T>
+    void report(T& hf)
+    {
+    	cout << hf.item << endl;
+    }
+    
+    int main()
+    {
+    	counts<int>();
+    	HasFriendT<int> hfi1(10);
+    	HasFriendT<int> hfi2(20);
+    	HasFriendT<double> hfdb(10.5);
+    	report(hfi1);
+    	report(hfi2);
+    	report(hfdb);
+    	cout << "counts<int>() output:\n";
+    	counts<int>();
+    	cout << "counts<double>() output:\n";
+    	counts<double>();
+    
+    	return 0;
+    }
+    ```
+
+* 结果：
+
+  * ```c++
+    template size: 4; template counts(): 0
+    10
+    20
+    10.5
+    counts<int>() output:
+    template size: 4; template counts(): 2
+    counts<double>() output:
+    template size: 8; template counts(): 1
+    ```
+
+**3、模板类的非约束模板友元函数**
