@@ -3182,3 +3182,4 @@ Stack<char *> st;	// create a stack for pointers-to-char
     ```
 
 **3、模板类的非约束模板友元函数**
+20240121
