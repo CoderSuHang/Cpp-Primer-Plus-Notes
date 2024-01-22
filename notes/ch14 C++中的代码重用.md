@@ -3069,6 +3069,123 @@ Stack<char *> st;	// create a stack for pointers-to-char
 
     * 模板参数T表示一种模板类型，而类型参数U和V表示非模板类型。
 
+#### 14.4.9 模板类和友元
+
+模板类声明可以有友元，模板的友元分3类：
+
+* 非模板友元；
+* 约束（bound）模板友元，即友元的类型取决于类被实例化时的类型。
+* 非约束（unbound）模板友元，即友元的所有具体化都是类的每一个具体化的友元。
+
+**1、模板类的非模板友元函数**
+
+在模板类中将一个常规函数声明为友元：
+
+* ```c++
+  template <class T>
+  class HasFriend
+  {
+      friend void counts();		// friend to all HasFriend instantiations
+      ...
+  };
+  ```
+
+* 为友元函数提供模板类参数需要如下声明：
+
+  * ```c++
+    template <class T>
+    class HasFriend
+    {
+        friend void report(HasFriend<T> &);		//boud template friend
+        // friend void report(HasFriend &); // not allowed
+        ...
+    };
+    ```
+
+  * 注意，report() 本身并不是模板函数，而只是使用一个模板作参数。这意味着必须为要使用的友元定义显式具体化：
+
+    * ```c++
+      void report(HasFriend<short> &) {...};	// explicit specialization for short
+      void report(HasFriend<int> &) {...};	// explicit specialization for int
+      ```
+
+* 示例：
+
+  * ```c++
+    // ch14_22_frnd2tmp.cpp -- template class with non-template friends
+    #include <iostream>
+    using std::cout;
+    using std::endl;
+    
+    template <typename T>
+    class HasFriend
+    {
+    private:
+    	T item;
+    	static int ct;
+    public:
+    	HasFriend(const T& i) : item(i) { ct++; }
+    	~HasFriend() { ct--; }
+    	friend void counts();
+    	friend void reports(HasFriend<T>&);		// template parameter
+    };
+    
+    // each specialization has its own static data member
+    template <typename T>
+    int HasFriend<T>::ct = 0;
+    
+    // non-template friend to all HasFriend<T> classes
+    void counts()
+    {
+    	cout << "int count: " << HasFriend<int>::ct << "; ";
+    	cout << "double count: " << HasFriend<double>::ct << endl;
+    }
+    
+    // non-template friend to the HasFriend<int> class
+    void reports(HasFriend<int>& hf)
+    {
+    	cout << "HasFriend<int>: " << hf.item << endl;
+    }
+    
+    // non-template friend to the HasFriend<double> class
+    void reports(HasFriend<double>& hf)
+    {
+    	cout << "HasFriend<double>: " << hf.item << endl;
+    }
+    
+    int main()
+    {
+    	cout << "No objects declared: ";
+    	counts();
+    	HasFriend<int> hfil(10);
+    	cout << "After hfi1 declared: ";
+    	counts();
+    	HasFriend<int> hfi2(20);
+    	cout << "After hfi2 declared: ";
+    	counts();
+    	HasFriend<double> hfdb(10.5);
+    	cout << "After hfdb declared: ";
+    	counts();
+    	reports(hfil);
+    	reports(hfi2);
+    	reports(hfdb);
+    
+    	return 0;
+    }
+    ```
+
+* 结果：
+
+  * ```c++
+    No objects declared: int count: 0; double count: 0
+    After hfi1 declared: int count: 1; double count: 0
+    After hfi2 declared: int count: 2; double count: 0
+    After hfdb declared: int count: 2; double count: 1
+    HasFriend<int>: 10
+    HasFriend<int>: 20
+    HasFriend<double>: 10.5
+    ```
+
 **2、模板类的约束模板友元函数**
 
 使友元函数本身称为模板时，即为约束模板友元作准备，要使类的每一个具体化都获得与友元匹配的具体化，主要有3步骤：
@@ -3283,3 +3400,5 @@ using pa2 = const int *(*)[10];
 ```
 
 
+
+## 
