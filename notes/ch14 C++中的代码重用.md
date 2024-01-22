@@ -3182,4 +3182,104 @@ Stack<char *> st;	// create a stack for pointers-to-char
     ```
 
 **3、模板类的非约束模板友元函数**
-20240121
+
+前一节中的约束模板友元函数是在类外面声明的模板的具体化。
+
+因此如果通过在类内部声明模板，可以创建非约束友元函数，即每个函数具体化都是每个类具体化的友元。
+
+* 对于非约束友元，友元模板类型参数与模板类类型参数是不同的:
+
+  * ```c++
+    template <typename T>
+    class ManyFriend
+    {
+    ...
+        template <typename C, typename D> friend void show2(C &, D &);
+    };
+    ```
+
+* 示例：
+
+  * ```c++
+    // ch14_24_manyfrnd.cpp -- unbound template friend to a template class
+    #include <iostream>
+    using std::cout;
+    using std::endl;
+    
+    template <typename T>
+    class ManyFriend
+    {
+    private:
+    	T item;
+    public:
+    	ManyFriend(const T & i) : item(i) {}
+    	template <typename C, typename D> friend void show2(C&, D&);
+    };
+    
+    template <typename C, typename D> void show2(C& c, D& d)
+    {
+    	cout << c.item << ", " << d.item << endl;
+    }
+    
+    int main()
+    {
+    	ManyFriend<int> hfi1(10);
+    	ManyFriend<int> hfi2(20);
+    	ManyFriend<double> hfdb(10.5);
+    	cout << "hfi1, hfi2: ";
+    	show2(hfi1, hfi2);
+    	cout << "hfdb, hfi2: ";
+    	show2(hfdb, hfi2);
+    
+    	return 0;
+    }
+    ```
+
+* 结果：
+
+  * ```c++
+    hfi1, hfi2: 10, 20
+    hfdb, hfi2: 10.5, 20
+    ```
+
+#### 14.4.10 模板别名
+
+1、可以使用 typedef 为模板具体化指定别名：
+
+```c++
+// define three typedef aliases
+typedef std::array<double, 12> arrd;
+typedef std::array<int, 12> arri;
+typedef std::array<std::string, 12> arrst;
+
+arrd gallons;	// gallons is type std::array<double, 12>
+arri days;		// days is type std::array<int, 12>
+arrst months;	// months is type std::array<std::string, 12>
+```
+
+2、使用模板提供一系列别名：
+
+```c++
+template<typename T>
+	using arrtype = std::array<T, 12>;	// template to crate multiple aliases
+```
+
+* 这将 arrtype 定义为一个模板别名，可以使用它来指定类型：
+
+  * ```c++
+    arrtype<double> gallons;
+    arrtype<int> day;
+    arrtype<std::string> months;
+    ```
+
+3、C++11允许将语法 using= 用于非模板。用于非模板时，与常规 typedef 等价：
+
+```c++
+typedef const char * pc1;
+using pc2 = const char *;
+
+typedef const int *(*pal)[10];
+using pa2 = const int *(*)[10];
+```
+
+
