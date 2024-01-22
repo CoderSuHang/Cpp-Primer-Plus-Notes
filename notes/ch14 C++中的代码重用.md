@@ -3223,6 +3223,7 @@ Stack<char *> st;	// create a stack for pointers-to-char
           ```
 
     * 但 counts() 函数没有参数，因此必须使用模板参数语法(<TT>)来指明其具体化。
+
 * 示例：
 
   * ```c++
@@ -3397,7 +3398,3 @@ using pc2 = const char *;
 typedef const int *(*pal)[10];
 using pa2 = const int *(*)[10];
 ```
-
-
-
-## 
